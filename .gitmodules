@@ -1,0 +1,4 @@
+[submodule "exegin"]
+	path = exegin
+	url = https://grs-softsvnrepo1.trilliant.local:8081/scm/git/exegin-nan
+	branch = master
