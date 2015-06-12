@@ -1,3 +1,7 @@
+# Ignore those folders
+bin/
+docs/doxygen/
+
 # Object files
 *.o
 *.ko

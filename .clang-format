@@ -1,0 +1,9 @@
+BasedOnStyle: Google
+BreakBeforeBraces: Allman
+DerivePointerAlignment: false
+IndentWidth: 4
+ColumnLimit: 0
+AllowAllParametersOfDeclarationOnNextLine: false
+AlwaysBreakBeforeMultilineStrings: false
+SpaceAfterCStyleCast: true
+PointerAlignment: Left

@@ -1,0 +1,7 @@
+# Ignore all files
+*
+
+# Keep these files
+!.gitignore
+!org.eclipse.core.resources.prefs
+!language.settings.xml

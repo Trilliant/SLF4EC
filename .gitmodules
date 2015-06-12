@@ -1,0 +1,4 @@
+[submodule "contrib/cmockery2"]
+	path = contrib/cmockery2
+	url = https://github.com/Trilliant/cmockery2.git
+	branch = master
