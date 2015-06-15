@@ -10,7 +10,7 @@ Very few lines of code are actually compiled in the binary. Most of the magic is
 
 ### Support for logging categories
 Logs are categorized according to a subsystem. For example, you could have categories called "Network", "GUI", "Power", etc.
-Based on these categories you can read your logs easier by only looking at one subsystem or even filter what will be sent to the loggers by specifying a log level at which the category is active.
+Based on these categories you can read your logs easily by only looking at one subsystem or even filter what will be sent to the loggers by specifying a log level at which the category is active.
 
 ### Optimized for embedded development
 - Using a few defines, you can control what log levels will actually be compiled in the final binary as well as if location informations will be included or not (file, function name and line number where the event occurred).
@@ -59,7 +59,7 @@ Licensed using the MIT License to encourage sharing among other projects, open s
 [SLF4J]:http://www.slf4j.org/
 [slf4net]:https://github.com/englishtown/slf4net
 [SLF4C]:https://github.com/SLF4C/SLF4C
-[cmockery2]:https://github.com/lpabon/cmockery2
+[cmockery2]:https://github.com/Trilliant/cmockery2
 [sonarqube]:http://www.sonarqube.org/
 [sonar-cxx]:https://github.com/wenns/sonar-cxx
 [Cppheck]:http://cppcheck.sourceforge.net/
