@@ -97,7 +97,6 @@ IS_EXTRA_(                                                                      
  * ****************************************************************************************************************************************** */
 
 #ifndef USE_LOCATION_INFO
-
 /**
  * Private function called by macros to log without location information.
  */

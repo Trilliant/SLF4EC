@@ -167,9 +167,9 @@ LogResult noLog()
 }
 
 /**
- * Macro function to avoid duplicate code inside nfLog0() and yfLog0().
+ * Macro function to avoid duplicate code inside nfLog1() and yfLog1().
  */
-#define HANDLE_LOG0(mFile, mLine, mFunction)                                            \
+#define HANDLE_LOG1(mFile, mLine, mFunction)                                            \
     LogResult returnCode = LOG_OK;                                                      \
     if (isInitialized)                                                                  \
     {                                                                                   \
@@ -193,7 +193,7 @@ LogResult noLog()
 /**
  * Function to avoid duplicate code inside nfLog1() and yfLog1().
  */
-inline static LogResult handleLog1(const char* const file,
+inline static LogResult handleLog0(const char* const file,
                                    const unsigned int* const line,
                                    const char* const function,
                                    const LogCategory* const category,
@@ -221,13 +221,13 @@ inline static LogResult handleLog1(const char* const file,
 LogResult nfLog0(const LogCategory* const category, const uint8_t level, const char* const msg)
 {
     va_list vaList;
-    return handleLog1(NULL, NULL, NULL, category, &level, msg, &vaList);
+    return handleLog0(NULL, NULL, NULL, category, &level, msg, &vaList);
 }
 
 LogResult nfLog1(const LogCategory* const category, const uint8_t level, const char* const formatStr, ...)
 {
     // SONAR has some weird troubles handling the HANDLE_LOG macro.
-    HANDLE_LOG0(NULL, NULL, NULL);
+    HANDLE_LOG1(NULL, NULL, NULL);
 }
 #else
 LogResult yfLog0(const char* const file,
@@ -238,7 +238,7 @@ LogResult yfLog0(const char* const file,
                  const char* const msg)
 {
     va_list vaList;
-    return handleLog1(file, &line, function, category, &level, msg, &vaList);
+    return handleLog0(file, &line, function, category, &level, msg, &vaList);
 }
 
 LogResult yfLog1(const char* const file,
@@ -248,7 +248,7 @@ LogResult yfLog1(const char* const file,
                  const uint8_t level,
                  const char* const formatStr, ...)
 {
-    HANDLE_LOG0(file, &line, function);
+    HANDLE_LOG1(file, &line, function);
 }
 #endif
 
