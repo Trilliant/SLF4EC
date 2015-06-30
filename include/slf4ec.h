@@ -40,6 +40,12 @@
 #define USE_LOCATION_INFO
 #endif
 
+#ifdef __func__
+#define FUNCTION __func__
+#else
+#define FUNCTION __FUNCTION__
+#endif
+
 /**********************************************************************************************************************************************
  * NOTE: A maximum of 64 arguments can be passed to the logger to format the string. This is due to the complex macro logic below to support
  * empty __VA_ARGS__ with IAR. In GCC the '##' operator would swallow the trailing comma so wouldn't require this complex logic.
@@ -64,24 +70,24 @@
               _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, \
               _51, _52, _53, _54, _55, _56, _57, _58, _59, _60, _61, _62, _63, _64, ...) _64
 
-// Check if there was multiple arguments in __VA_ARGS__ by counting the commas.
+// Check if there is more than one parameter
 // https://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/
-#define HAS_COMMA(...) ARG64(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
+#define HAS_EXTRA_PARAMS(...) ARG64(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
                              1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
 
 #define TRIGGER_PARENTHESIS_(...) ,
 
-#define IS_EMPTY(...) \
-IS_EMPTY_(                                                                                                                                             \
-    HAS_COMMA(__VA_ARGS__),                                  /**< test if there is just one argument, eventually an empty one */                       \
-    HAS_COMMA(TRIGGER_PARENTHESIS_ __VA_ARGS__),             /**< test if _TRIGGER_PARENTHESIS_ together with the argument adds a comma */             \
-    HAS_COMMA(__VA_ARGS__(/* empty */)),                     /**< test if the argument together with a parenthesis adds a comma */                     \
-    HAS_COMMA(TRIGGER_PARENTHESIS_ __VA_ARGS__(/* empty */)) /**< test if placing it between _TRIGGER_PARENTHESIS_ and the parenthesis adds a comma */ \
+#define IS_EXTRA(...) \
+IS_EXTRA_(                                                                                                                                             \
+    HAS_EXTRA_PARAMS(__VA_ARGS__),                                  /**< test if there is just one argument, eventually an empty one */                       \
+    HAS_EXTRA_PARAMS(TRIGGER_PARENTHESIS_ __VA_ARGS__),             /**< test if _TRIGGER_PARENTHESIS_ together with the argument adds a comma */             \
+    HAS_EXTRA_PARAMS(__VA_ARGS__(/* empty */)),                     /**< test if the argument together with a parenthesis adds a comma */                     \
+    HAS_EXTRA_PARAMS(TRIGGER_PARENTHESIS_ __VA_ARGS__(/* empty */)) /**< test if placing it between _TRIGGER_PARENTHESIS_ and the parenthesis adds a comma */ \
     )
 
 #define PASTE5(_0, _1, _2, _3, _4) _0##_1##_2##_3##_4
-#define IS_EMPTY_(_0, _1, _2, _3) HAS_COMMA(PASTE5(IS_EMPTY_CASE_, _0, _1, _2, _3))
-#define IS_EMPTY_CASE_0001 ,
+#define IS_EXTRA_(_0, _1, _2, _3) HAS_EXTRA_PARAMS(PASTE5(IS_EXTRA_CASE_, _0, _1, _2, _3))
+#define IS_EXTRA_CASE_1111 ,
 
 #define TOKEN_PASTE(x, y) TOKEN_PASTE_(x, y)
 #define TOKEN_PASTE_(x, y) x##y
@@ -95,14 +101,14 @@ IS_EMPTY_(                                                                      
 /**
  * Private function called by macros to log without location information.
  */
-LogResult nfLog1(const LogCategory* category, const uint8_t level, const char* msg);
-LogResult nfLog0(const LogCategory* category, const uint8_t level, const char* formatStr, ...);
+LogResult nfLog0(const LogCategory* category, const uint8_t level, const char* msg);
+LogResult nfLog1(const LogCategory* category, const uint8_t level, const char* formatStr, ...);
 #else
 /**
  * Private function called by macros to log with location information.
  */
-LogResult yfLog1(const char* file, const unsigned int line, const char* function, const LogCategory* category, const uint8_t level, const char* msg);
-LogResult yfLog0(const char* file, const unsigned int line, const char* function, const LogCategory* category, const uint8_t level, const char* formatStr, ...);
+LogResult yfLog0(const char* file, const unsigned int line, const char* function, const LogCategory* category, const uint8_t level, const char* msg);
+LogResult yfLog1(const char* file, const unsigned int line, const char* function, const LogCategory* category, const uint8_t level, const char* formatStr, ...);
 #endif
 
 /**
@@ -115,87 +121,87 @@ LogResult noLog();
  * Handles log levels available at compile time
  ************************************************************
  */
-#define _logOff1(logCategory, formatStr, ...) \
+#define _logOff0(logCategory, ...) \
     noLog()
-#define _logOff0(logCategory, formatStr, ...) \
+#define _logOff1(logCategory, ...) \
     noLog()
 
 #if COMPILED_LOG_LEVEL >= LEVEL_FATAL
-#define _logFatal1(logCategory, formatStr, ...) \
-    _log1(logCategory, LEVEL_FATAL, formatStr)
-#define _logFatal0(logCategory, formatStr, ...) \
-    _log0(logCategory, LEVEL_FATAL, formatStr, __VA_ARGS__)
+#define _logFatal0(logCategory, ...) \
+    _log0(logCategory, LEVEL_FATAL, __VA_ARGS__)
+#define _logFatal1(logCategory, ...) \
+    _log1(logCategory, LEVEL_FATAL, __VA_ARGS__)
 #else
-#define _logFatal1(logCategory, formatStr, ...) \
+#define _logFatal0(logCategory, ...) \
     noLog()
-#define _logFatal0(logCategory, formatStr, ...) \
+#define _logFatal1(logCategory, ...) \
     noLog()
 #endif
 
 #if COMPILED_LOG_LEVEL >= LEVEL_ERROR
-#define _logError1(logCategory, formatStr, ...) \
-    _log1(logCategory, LEVEL_ERROR, formatStr)
-#define _logError0(logCategory, formatStr, ...) \
-    _log0(logCategory, LEVEL_ERROR, formatStr, __VA_ARGS__)
+#define _logError0(logCategory, ...) \
+    _log0(logCategory, LEVEL_ERROR, __VA_ARGS__)
+#define _logError1(logCategory, ...) \
+    _log1(logCategory, LEVEL_ERROR, __VA_ARGS__)
 #else
-#define _logError1(logCategory, formatStr, ...) \
+#define _logError0(logCategory, ...) \
     noLog()
-#define _logError0(logCategory, formatStr, ...) \
+#define _logError1(logCategory, ...) \
     noLog()
 #endif
 
 #if COMPILED_LOG_LEVEL >= LEVEL_WARN
-#define _logWarn1(logCategory, formatStr, ...) \
-    _log1(logCategory, LEVEL_WARN, formatStr)
-#define _logWarn0(logCategory, formatStr, ...) \
-    _log0(logCategory, LEVEL_WARN, formatStr, __VA_ARGS__)
+#define _logWarn0(logCategory, ...) \
+    _log0(logCategory, LEVEL_WARN, __VA_ARGS__)
+#define _logWarn1(logCategory, ...) \
+    _log1(logCategory, LEVEL_WARN, __VA_ARGS__)
 #else
-#define _logWarn1(logCategory, formatStr, ...) \
+#define _logWarn0(logCategory, ...) \
     noLog()
-#define _logWarn0(logCategory, formatStr, ...) \
+#define _logWarn1(logCategory, ...) \
     noLog()
 #endif
 
 #if COMPILED_LOG_LEVEL >= LEVEL_INFO
-#define _logInfo1(logCategory, formatStr, ...) \
-    _log1(logCategory, LEVEL_INFO, formatStr)
-#define _logInfo0(logCategory, formatStr, ...) \
-    _log0(logCategory, LEVEL_INFO, formatStr, __VA_ARGS__)
+#define _logInfo0(logCategory, ...) \
+    _log0(logCategory, LEVEL_INFO, __VA_ARGS__)
+#define _logInfo1(logCategory, ...) \
+    _log1(logCategory, LEVEL_INFO, __VA_ARGS__)
 #else
-#define _logInfo1(logCategory, formatStr, ...) \
+#define _logInfo0(logCategory, ...) \
     noLog()
-#define _logInfo0(logCategory, formatStr, ...) \
+#define _logInfo1(logCategory, ...) \
     noLog()
 #endif
 
 #if COMPILED_LOG_LEVEL >= LEVEL_DEBUG
-#define _logDebug1(logCategory, formatStr, ...) \
-    _log1(logCategory, LEVEL_DEBUG, formatStr)
-#define _logDebug0(logCategory, formatStr, ...) \
-    _log0(logCategory, LEVEL_DEBUG, formatStr, __VA_ARGS__)
+#define _logDebug0(logCategory, ...) \
+    _log0(logCategory, LEVEL_DEBUG, __VA_ARGS__)
+#define _logDebug1(logCategory, ...) \
+    _log1(logCategory, LEVEL_DEBUG, __VA_ARGS__)
 #else
-#define _logDebug1(logCategory, formatStr, ...) \
+#define _logDebug0(logCategory, ...) \
     noLog()
-#define _logDebug0(logCategory, formatStr, ...) \
+#define _logDebug1(logCategory, ...) \
     noLog()
 #endif
 
 #if COMPILED_LOG_LEVEL >= LEVEL_TRACE
-#define _logTrace1(logCategory, formatStr, ...) \
-    _log1(logCategory, LEVEL_TRACE, formatStr)
-#define _logTrace0(logCategory, formatStr, ...) \
-    _log0(logCategory, LEVEL_TRACE, formatStr, __VA_ARGS__)
+#define _logTrace0(logCategory, ...) \
+    _log0(logCategory, LEVEL_TRACE, __VA_ARGS__)
+#define _logTrace1(logCategory, ...) \
+    _log1(logCategory, LEVEL_TRACE, __VA_ARGS__)
 #else
-#define _logTrace1(logCategory, formatStr, ...) \
+#define _logTrace0(logCategory, ...) \
     noLog()
-#define _logTrace0(logCategory, formatStr, ...) \
+#define _logTrace1(logCategory, ...) \
     noLog()
 #endif
 
-#define _logTest1(logCategory, formatStr, ...) \
-    _log1(logCategory, LEVEL_TEST, formatStr)
-#define _logTest0(logCategory, formatStr, ...) \
-    _log0(logCategory, LEVEL_TEST, formatStr, __VA_ARGS__)
+#define _logTest0(logCategory, ...) \
+    _log0(logCategory, LEVEL_TEST, __VA_ARGS__)
+#define _logTest1(logCategory, ...) \
+    _log1(logCategory, LEVEL_TEST, __VA_ARGS__)
 
 /*
  ************************************************************
@@ -204,15 +210,15 @@ LogResult noLog();
  */
 
 #ifdef USE_LOCATION_INFO
-#define _log1(logCategory, level, msg) \
-    yfLog1(__FILE__, __LINE__, __func__, &logCategory, level, msg "\n")
-#define _log0(logCategory, level, formatStr, ...) \
-    yfLog0(__FILE__, __LINE__, __func__, &logCategory, level, formatStr "\n", __VA_ARGS__)
+#define _log0(logCategory, level, ...) \
+    yfLog0(__FILE__, __LINE__, FUNCTION, &logCategory, level, __VA_ARGS__)
+#define _log1(logCategory, level, ...) \
+    yfLog1(__FILE__, __LINE__, FUNCTION, &logCategory, level, __VA_ARGS__)
 #else
-#define _log1(logCategory, level, msg) \
-    nfLog1(&logCategory, level, msg "\n")
-#define _log0(logCategory, level, formatStr, ...) \
-    nfLog0(&logCategory, level, formatStr "\n", __VA_ARGS__)
+#define _log0(logCategory, level, ...) \
+    nfLog0(&logCategory, level, __VA_ARGS__)
+#define _log1(logCategory, level, ...) \
+    nfLog1(&logCategory, level, __VA_ARGS__)
 #endif
 
 #endif /* SLF4EC_H_ */

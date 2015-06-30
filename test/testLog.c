@@ -241,7 +241,7 @@ void testLogInfo(void** state)
     assert_true(publishCalled);
     assert_int_equal(FORMAT_FULL, curFormat);
     assert_ptr_equal(&dummyCategory, curCategory);
-    assert_string_equal("DummyMessage\n", curFormatStr);
+    assert_string_equal("DummyMessage", curFormatStr);
 }
 
 void testLogLevelNames(void** state)

@@ -72,7 +72,7 @@ void callPublishFullFormatWithoutFile(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage", stdoutCategory.name, -1LLU);
+    sprintf(expected, "\n[ERROR][%s][%" PRIu64 "] - dummyMessage", stdoutCategory.name, -1LLU);
 
     // Check result
     assert_string_equal(expected, message);
@@ -94,7 +94,7 @@ void callPublishFullFormatWithoutLine(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage", stdoutCategory.name, -1LLU);
+    sprintf(expected, "\n[ERROR][%s][%" PRIu64 "] - dummyMessage", stdoutCategory.name, -1LLU);
 
     // Check result
     assert_string_equal(expected, message);
@@ -117,7 +117,7 @@ void callPublishFullFormatWithoutFunction(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage", stdoutCategory.name, -1LLU);
+    sprintf(expected, "\n[ERROR][%s][%" PRIu64 "] - dummyMessage", stdoutCategory.name, -1LLU);
 
     // Check result
     assert_string_equal(expected, message);
@@ -142,7 +142,7 @@ void callPublishFullFormatWith(void** state)
     const char* realFct = dummyFct + (strlen(dummyFct) - 10);
     const char* realFile = dummyFile + (strlen(dummyFile) - 15);
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage", stdoutCategory.name, -1LLU, realFile, dummyLine, realFct);
+    sprintf(expected, "\n[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage", stdoutCategory.name, -1LLU, realFile, dummyLine, realFct);
 
     // Check result
     assert_string_equal(expected, message);
@@ -166,7 +166,7 @@ void tstSmlFct(void** state)
     // Build expected result
     const char* realFile = dummyFile + (strlen(dummyFile) - 15);
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage", stdoutCategory.name, -1LLU, realFile, dummyLine, dummyFct);
+    sprintf(expected, "\n[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage", stdoutCategory.name, -1LLU, realFile, dummyLine, dummyFct);
 
     // Check result
     assert_string_equal(expected, message);
@@ -189,7 +189,7 @@ void tstSmlFile(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage", stdoutCategory.name, -1LLU, dummyFile, dummyLine, dummyFct);
+    sprintf(expected, "\n[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage", stdoutCategory.name, -1LLU, dummyFile, dummyLine, dummyFct);
 
     // Check result
     assert_string_equal(expected, message);
@@ -212,7 +212,7 @@ void callPublishMsgOnly(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "dummyMessage");
+    sprintf(expected, "\ndummyMessage");
 
     // Check result
     assert_string_equal(expected, message);

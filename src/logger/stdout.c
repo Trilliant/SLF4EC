@@ -45,10 +45,10 @@
 static void logFull(const LogRecord* const logRecord);
 static void logMsgOnly(const LogRecord* const logRecord);
 
-#define PRINTF_WITH_LOCATION "[%s][%s][%" PRIu64 "]%s:%d(%s) - ", logLevelNames[*record->level], record->category->name, logTimeApi(), \
+#define PRINTF_WITH_LOCATION "\n[%s][%s][%" PRIu64 "]%s:%d(%s) - ", logLevelNames[*record->level], record->category->name, logTimeApi(), \
                              record->file + (fileLength > MAX_FILE_LENGTH ? (fileLength - MAX_FILE_LENGTH) : 0), *record->line,        \
                              record->function + (fctLength > MAX_FCT_LENGHT ? (fctLength - MAX_FCT_LENGHT) : 0)
-#define PRINTF_WITHOUT_LOCATION "[%s][%s][%" PRIu64 "] - ", logLevelNames[*record->level], record->category->name, logTimeApi()
+#define PRINTF_WITHOUT_LOCATION "\n[%s][%s][%" PRIu64 "] - ", logLevelNames[*record->level], record->category->name, logTimeApi()
 #define VPRINTF record->formatStr, *record->vaList
 
 void initStdOut(const void* const param)
@@ -74,11 +74,16 @@ void logToStdOut(const LogRecord* const logRecord, const LogFormat format)
 static void logMsgOnly(const LogRecord* const record)
 {
 #ifdef UNIT_TESTING
+    char suffixMsg[4096];
     char fullMsg[8192];
+    fullMsg[0] = '\n';
+    fullMsg[1] = '\0';
 
-    vsprintf(fullMsg, VPRINTF);
+    vsprintf(suffixMsg, VPRINTF);
+    strcat(fullMsg, suffixMsg);
     outputMessage(fullMsg);
 #else
+    printf("\n");
     vprintf(VPRINTF);
 #endif
 }

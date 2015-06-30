@@ -56,128 +56,112 @@
  * Will not log anything, essentially a NOP. To be used when documenting a previously existing log. See ::LEVEL_OFF
  *
  * @param [in] logCategory ::LogCategory to log against
- * @param [in] formatStr C string that contains the text to be logged.
- * It can optionally contain embedded format specifiers that are replaced by the values specified in subsequent additional arguments and formatted as requested.
- * @param [in] ... Depending on the @p formatStr, the function may expect a sequence of additional arguments,
+ * @param [in] ... Minimally contains the @b formatStr, itself optionally containing format specifiers which will be replaced by the values specified in the additional arguments.
+ * Depending on the @b formatStr, the function may expect a sequence of additional arguments,
  * each containing a value to be used to replace a format specifier in the format string (or a pointer to a storage location, for n).
  * There should be at least as many of these arguments as the number of values specified in the format specifiers.
- * Additional arguments are ignored by the function.
  * @retval ::LOG_OK Logged successfully.
  * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
  */
-#define logOff(logCategory, formatStr, ...) \
-    TOKEN_PASTE(_logOff, IS_EMPTY(__VA_ARGS__)(logCategory, formatStr, __VA_ARGS__))
+#define logOff(logCategory, ...) \
+    TOKEN_PASTE(_logOff, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
  * Logs fatal information. See ::LEVEL_FATAL
  *
  * @param [in] logCategory ::LogCategory to log against
- * @param [in] formatStr C string that contains the text to be logged.
- * It can optionally contain embedded format specifiers that are replaced by the values specified in subsequent additional arguments and formatted as requested.
- * @param [in] ... Depending on the @p formatStr, the function may expect a sequence of additional arguments,
+ * @param [in] ... Minimally contains the @b formatStr, itself optionally containing format specifiers which will be replaced by the values specified in the additional arguments.
+ * Depending on the @b formatStr, the function may expect a sequence of additional arguments,
  * each containing a value to be used to replace a format specifier in the format string (or a pointer to a storage location, for n).
  * There should be at least as many of these arguments as the number of values specified in the format specifiers.
- * Additional arguments are ignored by the function.
  * @retval ::LOG_OK Logged successfully.
  * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
  */
-#define logFatal(logCategory, formatStr, ...) \
-    TOKEN_PASTE(_logFatal, IS_EMPTY(__VA_ARGS__)(logCategory, formatStr, __VA_ARGS__))
+#define logFatal(logCategory, ...) \
+    TOKEN_PASTE(_logFatal, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
  * Logs error information. See ::LEVEL_ERROR
  *
  * @param [in] logCategory ::LogCategory to log against
- * @param [in] formatStr C string that contains the text to be logged.
- * It can optionally contain embedded format specifiers that are replaced by the values specified in subsequent additional arguments and formatted as requested.
- * @param [in] ... Depending on the @p formatStr, the function may expect a sequence of additional arguments,
+ * @param [in] ... Minimally contains the @b formatStr, itself optionally containing format specifiers which will be replaced by the values specified in the additional arguments.
+ * Depending on the @b formatStr, the function may expect a sequence of additional arguments,
  * each containing a value to be used to replace a format specifier in the format string (or a pointer to a storage location, for n).
  * There should be at least as many of these arguments as the number of values specified in the format specifiers.
- * Additional arguments are ignored by the function.
  * @retval ::LOG_OK Logged successfully.
  * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
  */
-#define logError(logCategory, formatStr, ...) \
-    TOKEN_PASTE(_logError, IS_EMPTY(__VA_ARGS__)(logCategory, formatStr, __VA_ARGS__))
+#define logError(logCategory, ...) \
+    TOKEN_PASTE(_logError, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
  * Logs warning information. See ::LEVEL_WARN
  *
  * @param [in] logCategory ::LogCategory to log against
- * @param [in] formatStr C string that contains the text to be logged.
- * It can optionally contain embedded format specifiers that are replaced by the values specified in subsequent additional arguments and formatted as requested.
- * @param [in] ... Depending on the @p formatStr, the function may expect a sequence of additional arguments,
+ * @param [in] ... Minimally contains the @b formatStr, itself optionally containing format specifiers which will be replaced by the values specified in the additional arguments.
+ * Depending on the @b formatStr, the function may expect a sequence of additional arguments,
  * each containing a value to be used to replace a format specifier in the format string (or a pointer to a storage location, for n).
  * There should be at least as many of these arguments as the number of values specified in the format specifiers.
- * Additional arguments are ignored by the function.
  * @retval ::LOG_OK Logged successfully.
  * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
  */
-#define logWarn(logCategory, formatStr, ...) \
-    TOKEN_PASTE(_logWarn, IS_EMPTY(__VA_ARGS__)(logCategory, formatStr, __VA_ARGS__))
+#define logWarn(logCategory, ...) \
+    TOKEN_PASTE(_logWarn, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
  * Logs information. See ::LEVEL_INFO
  *
  * @param [in] logCategory ::LogCategory to log against
- * @param [in] formatStr C string that contains the text to be logged.
- * It can optionally contain embedded format specifiers that are replaced by the values specified in subsequent additional arguments and formatted as requested.
- * @param [in] ... Depending on the @p formatStr, the function may expect a sequence of additional arguments,
+ * @param [in] ... Minimally contains the @b formatStr, itself optionally containing format specifiers which will be replaced by the values specified in the additional arguments.
+ * Depending on the @b formatStr, the function may expect a sequence of additional arguments,
  * each containing a value to be used to replace a format specifier in the format string (or a pointer to a storage location, for n).
  * There should be at least as many of these arguments as the number of values specified in the format specifiers.
- * Additional arguments are ignored by the function.
  * @retval ::LOG_OK Logged successfully.
  * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
  */
-#define logInfo(logCategory, formatStr, ...) \
-    TOKEN_PASTE(_logInfo, IS_EMPTY(__VA_ARGS__)(logCategory, formatStr, __VA_ARGS__))
+#define logInfo(logCategory, ...) \
+    TOKEN_PASTE(_logInfo, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
  * Logs debug information. See ::LEVEL_DEBUG
  *
  * @param [in] logCategory ::LogCategory to log against
- * @param [in] formatStr C string that contains the text to be logged.
- * It can optionally contain embedded format specifiers that are replaced by the values specified in subsequent additional arguments and formatted as requested.
- * @param [in] ... Depending on the @p formatStr, the function may expect a sequence of additional arguments,
+ * @param [in] ... Minimally contains the @b formatStr, itself optionally containing format specifiers which will be replaced by the values specified in the additional arguments.
+ * Depending on the @b formatStr, the function may expect a sequence of additional arguments,
  * each containing a value to be used to replace a format specifier in the format string (or a pointer to a storage location, for n).
  * There should be at least as many of these arguments as the number of values specified in the format specifiers.
- * Additional arguments are ignored by the function.
  * @retval ::LOG_OK Logged successfully.
  * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
  */
-#define logDebug(logCategory, formatStr, ...) \
-    TOKEN_PASTE(_logDebug, IS_EMPTY(__VA_ARGS__)(logCategory, formatStr, __VA_ARGS__))
+#define logDebug(logCategory, ...) \
+    TOKEN_PASTE(_logDebug, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
  * Logs trace information. See ::LEVEL_TRACE
  *
  * @param [in] logCategory ::LogCategory to log against
- * @param [in] formatStr C string that contains the text to be logged.
- * It can optionally contain embedded format specifiers that are replaced by the values specified in subsequent additional arguments and formatted as requested.
- * @param [in] ... Depending on the @p formatStr, the function may expect a sequence of additional arguments,
+ * @param [in] ... Minimally contains the @b formatStr, itself optionally containing format specifiers which will be replaced by the values specified in the additional arguments.
+ * Depending on the @b formatStr, the function may expect a sequence of additional arguments,
  * each containing a value to be used to replace a format specifier in the format string (or a pointer to a storage location, for n).
  * There should be at least as many of these arguments as the number of values specified in the format specifiers.
- * Additional arguments are ignored by the function.
  * @retval ::LOG_OK Logged successfully.
  * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
  */
-#define logTrace(logCategory, formatStr, ...) \
-    TOKEN_PASTE(_logTrace, IS_EMPTY(__VA_ARGS__)(logCategory, formatStr, __VA_ARGS__))
+#define logTrace(logCategory, ...) \
+    TOKEN_PASTE(_logTrace, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
  * Logging to be used temporarily during development. See ::LEVEL_TEST
  *
  * @param [in] logCategory ::LogCategory to log against
- * @param [in] formatStr C string that contains the text to be logged.
- * It can optionally contain embedded format specifiers that are replaced by the values specified in subsequent additional arguments and formatted as requested.
- * @param [in] ... Depending on the @p formatStr, the function may expect a sequence of additional arguments,
+ * @param [in] ... Minimally contains the @b formatStr, itself optionally containing format specifiers which will be replaced by the values specified in the additional arguments.
+ * Depending on the @b formatStr, the function may expect a sequence of additional arguments,
  * each containing a value to be used to replace a format specifier in the format string (or a pointer to a storage location, for n).
  * There should be at least as many of these arguments as the number of values specified in the format specifiers.
- * Additional arguments are ignored by the function.
  * @retval ::LOG_OK Logged successfully.
  * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
  */
-#define logTest(logCategory, formatStr, ...) \
-    TOKEN_PASTE(_logTest, IS_EMPTY(__VA_ARGS__)(logCategory, formatStr, __VA_ARGS__))
+#define logTest(logCategory, ...) \
+    TOKEN_PASTE(_logTest, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 #endif /* SIMPLELOG_H_ */

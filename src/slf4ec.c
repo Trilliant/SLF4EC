@@ -218,19 +218,19 @@ inline static LogResult handleLog1(const char* const file,
 }
 
 #ifndef USE_LOCATION_INFO
-LogResult nfLog1(const LogCategory* const category, const uint8_t level, const char* const msg)
+LogResult nfLog0(const LogCategory* const category, const uint8_t level, const char* const msg)
 {
     va_list vaList;
     return handleLog1(NULL, NULL, NULL, category, &level, msg, &vaList);
 }
 
-LogResult nfLog0(const LogCategory* const category, const uint8_t level, const char* const formatStr, ...)
+LogResult nfLog1(const LogCategory* const category, const uint8_t level, const char* const formatStr, ...)
 {
     // SONAR has some weird troubles handling the HANDLE_LOG macro.
     HANDLE_LOG0(NULL, NULL, NULL);
 }
 #else
-LogResult yfLog1(const char* const file,
+LogResult yfLog0(const char* const file,
                  const unsigned int line,
                  const char* const function,
                  const LogCategory* const category,
@@ -241,7 +241,7 @@ LogResult yfLog1(const char* const file,
     return handleLog1(file, &line, function, category, &level, msg, &vaList);
 }
 
-LogResult yfLog0(const char* const file,
+LogResult yfLog1(const char* const file,
                  const unsigned int line,
                  const char* const function,
                  const LogCategory* const category,
