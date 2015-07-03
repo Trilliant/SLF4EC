@@ -137,7 +137,7 @@ typedef struct
      * Line number within the source code file where this event occurred.
      * NULL if @p USE_LOCATION_INFO is not defined.
      */
-    const unsigned int* const line;
+    const uint_fast32_t* const line;
 
     /**
      * Name of the function within which the even occurred.

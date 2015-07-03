@@ -48,7 +48,7 @@ static bool isInitialized = false;
 
 static bool isCategoryActive(const LogCategory* const category, const uint8_t* const level);
 static void _privateLog(const char* const file,
-                        const unsigned int* const line,
+                        const uint_fast32_t* const line,
                         const char* const function,
                         const LogCategory* const category,
                         const uint8_t* const level,
@@ -88,7 +88,7 @@ LogResult initLogger(const uint8_t _nbCategories,
             nbLoggers = _nbLoggers;
             loggers = _loggers;
 
-            int i;
+            uint_fast8_t i;
             for (i = 0; i < nbLoggers; i++)
             {
                 if (loggers[i]->initFct == NULL || loggers[i]->publishFct == NULL)
@@ -127,7 +127,7 @@ LogResult setLevels(const uint8_t level)
     {
         if (isInitialized)
         {
-            int i;
+            uint_fast8_t i;
             for (i = 0; i < nbCategories; i++)
             {
                 categories[i]->currentLogLevel = level;
@@ -194,7 +194,7 @@ LogResult noLog()
  * Function to avoid duplicate code inside nfLog1() and yfLog1().
  */
 inline static LogResult handleLog0(const char* const file,
-                                   const unsigned int* const line,
+                                   const uint_fast32_t* const line,
                                    const char* const function,
                                    const LogCategory* const category,
                                    const uint8_t* const level,
@@ -231,7 +231,7 @@ LogResult nfLog1(const LogCategory* const category, const uint8_t level, const c
 }
 #else
 LogResult yfLog0(const char* const file,
-                 const unsigned int line,
+                 const uint_fast32_t line,
                  const char* const function,
                  const LogCategory* const category,
                  const uint8_t level,
@@ -242,7 +242,7 @@ LogResult yfLog0(const char* const file,
 }
 
 LogResult yfLog1(const char* const file,
-                 const unsigned int line,
+                 const uint_fast32_t line,
                  const char* const function,
                  const LogCategory* const category,
                  const uint8_t level,
@@ -253,7 +253,7 @@ LogResult yfLog1(const char* const file,
 #endif
 
 static void _privateLog(const char* const file,
-                        const unsigned int* const line,
+                        const uint_fast32_t* const line,
                         const char* const function,
                         const LogCategory* const category,
                         const uint8_t* const level,
