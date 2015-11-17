@@ -38,6 +38,9 @@
 # Needed so the compiler will stop on error
 SHELL := /bin/bash -o pipefail
 
+# Define to '@' if you want a silent build, define it to '' otherwise
+SILENT_MODE ?= @
+
 #################################################################################
 # Paths and project structure
 #################################################################################
@@ -184,40 +187,40 @@ allSrc += $(addprefix $(EXAMPLEDIR_REL)/, $(app))
 ifeq ($(COMPILER), iar)
 $(OBJDIR_SRC)/%.o: $(SRCDIR)/%.c $(mkfile_path)
 	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
-	@echo "[Compiling $<]"
-	cd $(ROOT) && $(CC) "$<" $(CFLAGS) $(DEFINES) $(INCLUDES) --dependencies=m $(@:%.o=%.d) -o $@ 2>&1 | tee -a "$(BINDIR)/iar-compile.err"
+	@echo "Compiling [$<]"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) "$<" $(CFLAGS) $(DEFINES) $(INCLUDES) --dependencies=m $(@:%.o=%.d) -o $@ 2>&1 | tee -a "$(BINDIR)/iar-compile.err"
 
 $(OBJDIR_SRC)/%.o: $(EXAMPLEDIR)/%.c $(mkfile_path)
 	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
-	@echo "[Compiling $<]"
-	cd $(ROOT) && $(CC) "$<" $(CFLAGS) $(DEFINES) $(INCLUDES) --dependencies=m $(@:%.o=%.d) -o $@ 2>&1 | tee -a "$(BINDIR)/iar-compile.err"
+	@echo "Compiling [$<]"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) "$<" $(CFLAGS) $(DEFINES) $(INCLUDES) --dependencies=m $(@:%.o=%.d) -o $@ 2>&1 | tee -a "$(BINDIR)/iar-compile.err"
 else
 $(OBJDIR_SRC)/%.o: $(SRCDIR)/%.c $(mkfile_path)
 	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
-	@echo "[Compiling $<]"
-	cd $(ROOT) && $(CC) $(CFLAGS) $(DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 2>&1 | tee -a "$(BINDIR)/gcc-compile.err"
+	@echo "Compiling [$<]"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) $(CFLAGS) $(DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 2>&1 | tee -a "$(BINDIR)/gcc-compile.err"
 
 $(OBJDIR_SRC)/%.o: $(EXAMPLEDIR)/%.c $(mkfile_path)
 	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
-	@echo "[Compiling $<]"
-	cd $(ROOT) && $(CC) $(CFLAGS) $(DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 2>&1 | tee -a "$(BINDIR)/gcc-compile.err"
+	@echo "Compiling [$<]"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) $(CFLAGS) $(DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 2>&1 | tee -a "$(BINDIR)/gcc-compile.err"
 endif
 $(OBJDIR_TEST)/cmockery2/cmockery.o: $(CMOCKERY2_HOME)/src/cmockery.c $(mkfile_path)
 	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
-	@echo "[Compiling $<]"
-	cd $(ROOT) && $(CC) $(TEST_CFLAGS) $(TEST_DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<"
+	@echo "Compiling [$<]"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) $(TEST_CFLAGS) $(TEST_DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<"
 
 # The rule must absolutely use a relative path because of gcov output
 $(OBJDIR_TEST)/%.o: $(TESTDIR_REL)/%.c $(mkfile_path)
 	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
-	@echo "[Compiling $<]"
-	cd $(ROOT) && $(CC) $(TEST_CFLAGS) $(TEST_DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 2>&1 | tee -a "$(BINDIR)/gcc-compile.err"
+	@echo "Compiling [$<]"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) $(TEST_CFLAGS) $(TEST_DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 2>&1 | tee -a "$(BINDIR)/gcc-compile.err"
 
 # The rule must absolutely use a relative path because of gcov output
 $(OBJDIR_TEST)/%.o: $(SRCDIR_REL)/%.c $(mkfile_path)
 	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
-	@echo "[Compiling $<]"
-	cd $(ROOT) && $(CC) $(TEST_CFLAGS) $(TEST_DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 2>&1 | tee -a "$(BINDIR)/gcc-compile.err"
+	@echo "Compiling [$<]"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) $(TEST_CFLAGS) $(TEST_DEFINES) $(INCLUDES) -c  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 2>&1 | tee -a "$(BINDIR)/gcc-compile.err"
 
 #################################################################################
 # Targets
@@ -236,39 +239,39 @@ all: build link
 link: $(app_obj)
 	@echo
 	@echo "[Linking $(PROJECT_NAME)'s example]"
-	cd $(ROOT) && $(CC) -o "$(BINDIR)/example.exe" $(LDFLAGS) $^ "$(OUTPUT_LIB)" 2>&1 | tee -a "$(BINDIR)/gcc-link.err"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) -o "$(BINDIR)/example.exe" $(LDFLAGS) $^ "$(OUTPUT_LIB)" 2>&1 | tee -a "$(BINDIR)/gcc-link.err"
 	@echo
 
 .PHONY: build
 build: $(libSrc_obj)
 	@echo
 	@echo "[Creating $(PROJECT_NAME) library]"
-	cd $(ROOT) && $(AR) rcs "$(OUTPUT_LIB)" $(libSrc_obj)
+	$(SILENT_MODE) cd $(ROOT) && $(AR) rcs "$(OUTPUT_LIB)" $(libSrc_obj)
 	@echo
 
 .PHONY: clean
 clean:
 	@echo "[Deleting test output]"
-	rm -rf $(ROOT)/bin
-	rm -rf $(DOCDIR)/doxygen
+	$(SILENT_MODE) rm -rf $(ROOT)/bin
+	$(SILENT_MODE) rm -rf $(DOCDIR)/doxygen
 	@echo
 
 .PHONY: build_test
 build_test: $(test_obj)
 	@echo
 	@echo "[Linking $(PROJECT_NAME)'s unit tests]"
-	cd $(ROOT) && $(CC) -o $(BINDIR)/$(PROJECT_NAME).exe $(TEST_LDFLAGS) $^ 2>&1 | tee -a "$(BINDIR)/gcc-link.err"
+	$(SILENT_MODE) cd $(ROOT) && $(CC) -o $(BINDIR)/$(PROJECT_NAME).exe $(TEST_LDFLAGS) $^ 2>&1 | tee -a "$(BINDIR)/gcc-link.err"
 	@echo
 
 .PHONY: run
 run:
 	@echo "[Executing tests]"
-	cd $(BINDIR) && "$(BINDIR)/$(PROJECT_NAME).exe"
+	$(SILENT_MODE) cd $(BINDIR) && "$(BINDIR)/$(PROJECT_NAME).exe"
 # If PYTHON_HOME and GCOVR_HOME is defined, than we can extract coverage data
 ifneq ($(and $(PYTHON_HOME),$(GCOVR_HOME)),)
 	@echo
 	@echo "[Generating coverage report]"
-	cd $(ROOT) && '$(PYTHON_HOME)/python' '$(GCOVR_HOME)/scripts/gcovr' -r . --xml -o '$(BINDIR)/$(PROJECT_NAME)_gcovr.xml'
+	$(SILENT_MODE) cd $(ROOT) && '$(PYTHON_HOME)/python' '$(GCOVR_HOME)/scripts/gcovr' -r . --xml -o '$(BINDIR)/$(PROJECT_NAME)_gcovr.xml'
 endif
 	@echo
 
@@ -279,7 +282,7 @@ test: build build_test run
 format:
 ifdef PYTHON_HOME
 	@echo "[Formatting source code]"
-	cd $(ROOT) && "$(PYTHON_HOME)/python" "$(CLANG_HOME)/formatAll.py" -d "$(SRCDIR_REL),$(EXAMPLEDIR_REL),$(TESTDIR_REL),$(INCLUDEDIR_REL)" -b "$(CLANG_HOME)/$(CLANG_EXEC)"
+	$(SILENT_MODE) cd $(ROOT) && "$(PYTHON_HOME)/python" "$(CLANG_HOME)/formatAll.py" -d "$(SRCDIR_REL),$(EXAMPLEDIR_REL),$(TESTDIR_REL),$(INCLUDEDIR_REL)" -b "$(CLANG_HOME)/$(CLANG_EXEC)"
 else
 	@echo "ERROR: Cannot execute format without PYTHON_HOME"
 endif
