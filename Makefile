@@ -89,7 +89,7 @@ OBJDIR_TEST := $(abspath $(BINDIR)/obj/test)
 OUTPUT_LIB := $(BINDIR)/$(PROJECT_NAME).a
 
 # If on Windows, edit PATH to have MSYS and MINGW if they exists
-ifeq ($(findstring Windows,$(OS)),Windows)
+ifeq ($(OS),Windows_NT)
     ifneq ($(and $(MSYS_HOME),$(MINGW_HOME)),)
         override PATH := $(shell (echo "/$(MSYS_HOME)\bin" | sed 's/\\/\//g' | sed 's/://')):$(shell (echo "/$(MINGW_HOME)\bin" | sed 's/\\/\//g' | sed 's/://')):$(PATH)
     endif
@@ -103,8 +103,12 @@ RATS := "$(RATS_HOME)/rats"
 VERA := "$(VERA_HOME)/bin/vera++"
 SONAR := $(SONAR_RUNNER_HOME)/bin/sonar-runner
 CLANG_EXEC := clang-format
-ifeq ($(findstring Windows,$(OS)),Windows)
+ifeq ($(OS),Windows_NT)
 CLANG_EXEC = clang-format.exe
+endif
+PYTHON_EXEC := python3
+ifeq ($(OS),Windows_NT)
+PYTHON_EXEC = python
 endif
 
 #################################################################################
@@ -282,7 +286,7 @@ test: build build_test run
 format:
 ifdef PYTHON_HOME
 	@echo "[Formatting source code]"
-	$(SILENT_MODE) cd $(ROOT) && "$(PYTHON_HOME)/python" "$(CLANG_HOME)/formatAll.py" -d "$(SRCDIR_REL),$(EXAMPLEDIR_REL),$(TESTDIR_REL),$(INCLUDEDIR_REL)" -b "$(CLANG_HOME)/$(CLANG_EXEC)"
+	$(SILENT_MODE) cd $(ROOT) && "$(PYTHON_HOME)/$(PYTHON_EXEC)" "$(CLANG_HOME)/formatAll.py" -d "$(SRCDIR_REL),$(EXAMPLEDIR_REL),$(TESTDIR_REL),$(INCLUDEDIR_REL)" -b "$(CLANG_HOME)/$(CLANG_EXEC)"
 else
 	@echo "ERROR: Cannot execute format without PYTHON_HOME"
 endif
@@ -343,35 +347,37 @@ endif
 ## Makefile dependency checks
 #################################################################################
 
-# If compiling on Windows, check for availability of MSYS and MINGW
-ifeq ($(findstring Windows,$(OS)),Windows)
+# Tools only available on Windows
+ifeq ($(OS),Windows_NT)
+	# Check for MSYS_HOME
     ifndef MSYS_HOME
         $(warning MSYS_HOME must point to the path where MSYS is available)
     endif
 
+	# Check for MINGW_HOME
     ifndef MINGW_HOME
         $(warning MINGW_HOME must point to the path where MINGW is available)
+    endif
+    
+    # Check for cppcheck
+    ifndef CPPCHECK_HOME
+        $(warning CPPCHECK_HOME must point to where cppcheck is installed in order to support the cppcheck analysis done by Sonar)
+    endif
+
+    # Check for RATS
+    ifndef RATS_HOME
+        $(warning RATS_HOME must point to where RATS is installed in order to support the RATS analysis done by Sonar)
+    endif
+
+    # Check for Vera++
+    ifndef VERA_HOME
+        $(warning VERA_HOME must point to where Vera++ is installed in order to support the Vera++ analysis done by Sonar)
     endif
 endif
 
 # Check for Doxygen availability
 ifndef DOXYGEN_HOME
 $(warning DOXYGEN_HOME must point to where Doxygen is installed to support generation of documentation)
-endif
-
-# Check for cppcheck
-ifndef CPPCHECK_HOME
-$(warning CPPCHECK_HOME must point to where cppcheck is installed in order to support the cppcheck analysis done by Sonar)
-endif
-
-# Check for RATS
-ifndef RATS_HOME
-$(warning RATS_HOME must point to where RATS is installed in order to support the RATS analysis done by Sonar)
-endif
-
-# Check for Vera++
-ifndef VERA_HOME
-$(warning VERA_HOME must point to where Vera++ is installed in order to support the Vera++ analysis done by Sonar)
 endif
 
 # Check for Sonar

@@ -46,7 +46,7 @@ static void logFull(const LogRecord* const logRecord);
 static void logMsgOnly(const LogRecord* const logRecord);
 
 #define PRINTF_WITH_LOCATION "[%s][%s][%" PRIu64 "]%s:%d(%s) - ", logLevelNames[*record->level], record->category->name, *record->timestamp, \
-                             record->file + (fileLength > MAX_FILE_LENGTH ? (fileLength - MAX_FILE_LENGTH) : 0), *record->line,             \
+                             record->file + (fileLength > MAX_FILE_LENGTH ? (fileLength - MAX_FILE_LENGTH) : 0), *record->line,              \
                              record->function + (fctLength > MAX_FCT_LENGHT ? (fctLength - MAX_FCT_LENGHT) : 0)
 #define PRINTF_WITHOUT_LOCATION "[%s][%s][%" PRIu64 "] - ", logLevelNames[*record->level], record->category->name, *record->timestamp
 #define VPRINTF record->formatStr, *record->vaList
