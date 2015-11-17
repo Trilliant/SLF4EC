@@ -145,6 +145,7 @@ typedef struct
      */
     const char* const function;
 
+    const uint64_t* const timestamp;   /**< timestamp of this event. */
     const LogCategory* const category; /**< LogCategory of this event. */
     const uint8_t* const level;        /**< LogLevel for this event. */
     const char* const formatStr;       /**< Format String for this event. */
@@ -168,7 +169,7 @@ typedef void (*const PublishLog)(const LogRecord* const logRecord, const LogForm
 typedef void (*const InitLog)(const void* const config);
 
 /**
- * Method called by loggers to obtain a timestamp of the event while recording it.
+ * Method called by SLF4EC to obtain a timestamp of the event before publishing it to loggers.
  *
  * @return EPOCH timestamp
  */

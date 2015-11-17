@@ -64,10 +64,11 @@ void callPublishFullFormatWithoutFile(void** state)
     unsigned int dummyLine = __LINE__;
     const char* const dummyFile = NULL;
     const char* const dummyFct = __FUNCTION__;
+    const uint64_t dummyTimestamp = -1LLU;
     va_list dummyVaList;
 
     // Execute test
-    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
+    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .timestamp = &dummyTimestamp, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
     logToStdOut(&record, FORMAT_FULL);
 
     // Build expected result
@@ -86,10 +87,11 @@ void callPublishFullFormatWithoutLine(void** state)
     uint8_t dummyLevel = LEVEL_ERROR;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = __FUNCTION__;
+    const uint64_t dummyTimestamp = -1LLU;
     va_list dummyVaList;
 
     // Execute test
-    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .level = &dummyLevel, .line = NULL, .vaList = &dummyVaList};
+    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .timestamp = &dummyTimestamp, .level = &dummyLevel, .line = NULL, .vaList = &dummyVaList};
     logToStdOut(&record, FORMAT_FULL);
 
     // Build expected result
@@ -109,10 +111,11 @@ void callPublishFullFormatWithoutFunction(void** state)
     unsigned int dummyLine = __LINE__;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = NULL;
+    const uint64_t dummyTimestamp = -1LLU;
     va_list dummyVaList;
 
     // Execute test
-    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
+    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .timestamp = &dummyTimestamp, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
     logToStdOut(&record, FORMAT_FULL);
 
     // Build expected result
@@ -132,10 +135,11 @@ void callPublishFullFormatWith(void** state)
     unsigned int dummyLine = __LINE__;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = __FUNCTION__;
+    const uint64_t dummyTimestamp = -1LLU;
     va_list dummyVaList;
 
     // Execute test
-    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
+    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .timestamp = &dummyTimestamp, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
     logToStdOut(&record, FORMAT_FULL);
 
     // Build expected result
@@ -157,10 +161,11 @@ void tstSmlFct(void** state)
     unsigned int dummyLine = __LINE__;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = __FUNCTION__;
+    const uint64_t dummyTimestamp = -1LLU;
     va_list dummyVaList;
 
     // Execute test
-    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
+    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .timestamp = &dummyTimestamp, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
     logToStdOut(&record, FORMAT_FULL);
 
     // Build expected result
@@ -181,10 +186,11 @@ void tstSmlFile(void** state)
     unsigned int dummyLine = __LINE__;
     const char* const dummyFile = "smallFile";
     const char* const dummyFct = __FUNCTION__;
+    const uint64_t dummyTimestamp = -1LLU;
     va_list dummyVaList;
 
     // Execute test
-    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
+    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .timestamp = &dummyTimestamp, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
     logToStdOut(&record, FORMAT_FULL);
 
     // Build expected result
@@ -204,10 +210,11 @@ void callPublishMsgOnly(void** state)
     unsigned int dummyLine = __LINE__;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = __FUNCTION__;
+    const uint64_t dummyTimestamp = -1LLU;
     va_list dummyVaList;
 
     // Execute test
-    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
+    LogRecord record = {.category = &stdoutCategory, .file = dummyFile, .formatStr = "dummyMessage", .function = dummyFct, .timestamp = &dummyTimestamp, .level = &dummyLevel, .line = &dummyLine, .vaList = &dummyVaList};
     logToStdOut(&record, FORMAT_MSG_ONLY);
 
     // Build expected result

@@ -260,11 +260,14 @@ static void _privateLog(const char* const file,
                         const char* const formatStr,
                         const va_list* const vaList)
 {
+    const uint64_t timestamp = logTimeApi();
+
     LogRecord curRecord =
         {
          .file = file,
          .line = line,
          .function = function,
+         .timestamp = &timestamp,
          .category = category,
          .level = level,
          .formatStr = formatStr,
