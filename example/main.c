@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * Main file for SLF4EC's example

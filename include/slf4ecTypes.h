@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * Defines types used in SLF4EC

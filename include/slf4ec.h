@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * Full interface for SLF4EC
@@ -73,12 +73,12 @@
 // Check if there is more than one parameter
 // https://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/
 #define HAS_EXTRA_PARAMS(...) ARG64(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
-                             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
+                                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
 
 #define TRIGGER_PARENTHESIS_(...) ,
 
 #define IS_EXTRA(...) \
-IS_EXTRA_(                                                                                                                                             \
+IS_EXTRA_(                                                                                                                                                    \
     HAS_EXTRA_PARAMS(__VA_ARGS__),                                  /**< test if there is just one argument, eventually an empty one */                       \
     HAS_EXTRA_PARAMS(TRIGGER_PARENTHESIS_ __VA_ARGS__),             /**< test if _TRIGGER_PARENTHESIS_ together with the argument adds a comma */             \
     HAS_EXTRA_PARAMS(__VA_ARGS__(/* empty */)),                     /**< test if the argument together with a parenthesis adds a comma */                     \

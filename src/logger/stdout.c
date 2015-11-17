@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * Logger for printing to STDOUT

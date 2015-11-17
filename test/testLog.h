@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * Test slf4ec.c

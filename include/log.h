@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * Simplified logging API

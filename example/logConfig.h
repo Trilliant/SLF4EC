@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * Logger configuration example for SLF4EC

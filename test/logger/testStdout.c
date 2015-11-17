@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * Tests for stdout.c

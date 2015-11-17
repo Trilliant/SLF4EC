@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  *
  * API for controlling SLF4EC
