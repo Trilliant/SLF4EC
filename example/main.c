@@ -57,7 +57,7 @@ const GetLogTimestamp logTimeApi = &getTimestamp;
 
 int main()
 {
-    Logger* const** curLoggers = NULL;
+    Logger* const* curLoggers = NULL;
     int nbLoggers = 0;
     int i = 0;
 
@@ -80,12 +80,12 @@ int main()
     setLevels(LEVEL_MAX);
 
     // Use the API to change a specific logger by name.
-    nbLoggers = getLoggers(curLoggers);
+    nbLoggers = getLoggers(&curLoggers);
     for (i = 0; i < nbLoggers; i++)
     {
-        if (strcmp((*curLoggers)[i]->loggerName, "StdOut") == 0)
+        if (strcmp(curLoggers[i]->loggerName, "StdOut") == 0)
         {
-            (*curLoggers)[i]->currentLogLevel = LEVEL_FATAL;
+            curLoggers[i]->currentLogLevel = LEVEL_FATAL;
         }
     }
 
