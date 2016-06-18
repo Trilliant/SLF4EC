@@ -34,6 +34,9 @@
 #ifndef LOG_TYPES_H_
 #define LOG_TYPES_H_
 
+#ifndef UNIT_TESTING
+#include <stdlib.h>
+#endif
 #include <stddef.h>
 #include <stdarg.h>
 #include <inttypes.h>
@@ -137,7 +140,7 @@ typedef struct
      * Line number within the source code file where this event occurred.
      * NULL if @p USE_LOCATION_INFO is not defined.
      */
-    const uint_fast32_t* const line;
+    const uint32_t* const line;
 
     /**
      * Name of the function within which the even occurred.
@@ -149,7 +152,7 @@ typedef struct
     const LogCategory* const category; /**< LogCategory of this event. */
     const uint8_t* const level;        /**< LogLevel for this event. */
     const char* const formatStr;       /**< Format String for this event. */
-    const va_list* const vaList;       /**< Argument list for this event. */
+    va_list* const vaList;             /**< Argument list for this event. */
 } LogRecord;
 
 /**

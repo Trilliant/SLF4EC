@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ivy-module version="2.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd"
+	xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="com.trilliantinc" module="slf4ec" />
+	<configurations>
+		<conf name="cortex-m4_gcc_withLoc"
+			description="Binary for ARM Cortex-M4 compiled with GCC with location 
+			information" />
+		<conf name="cortex-m4_gcc_withoutLoc"
+			description="Binary for ARM Cortex-M4 compiled with GCC without location 
+			information" />
+		<conf name="cortex-m4_iar_withLoc"
+			description="Binary for ARM Cortex-M4 compiled with IAR with location 
+			information" />
+		<conf name="cortex-m4_iar_withoutLoc"
+			description="Binary for ARM Cortex-M4 compiled with IAR without location 
+			information" />
+		<conf name="x86_gcc_withLoc"
+			description="Binary for x86 compiled with GCC with location information" />
+		<conf name="x86_gcc_withoutLoc"
+			description="Binary for x86 compiled with GCC without location information" />
+		<conf name="artifacts" visibility="private" description="Build's artifacts" />
+		<conf name="slf4ec"
+			extends="cortex-m4_gcc_withLoc,cortex-m4_gcc_withoutLoc,cortex-m4_iar_withLoc,cortex-m4_iar_withoutLoc,x86_gcc_withLoc,x86_gcc_withoutLoc"
+			description="All variants of slf4ec" />
+		<conf name="all" extends="*" description="All artifacts" />
+	</configurations>
+	<publications>
+		<artifact name="slf4ec" e:arch="x86" e:compiler="gcc"
+			e:locInfo="withLoc" ext="zip" type="x86_gcc_withLoc" conf="x86_gcc_withLoc"
+			packaging="zip" />
+		<artifact name="slf4ec" e:arch="x86" e:compiler="gcc"
+			e:locInfo="withoutLoc" ext="zip" type="x86_gcc_withoutLoc" conf="x86_gcc_withoutLoc"
+			packaging="zip" />
+		<artifact name="slf4ec" e:arch="cortex-m4" e:compiler="gcc"
+			e:locInfo="withLoc" ext="zip" type="cortex-m4_gcc_withLoc" conf="cortex-m4_gcc_withLoc"
+			packaging="zip" />
+		<artifact name="slf4ec" e:arch="cortex-m4" e:compiler="gcc"
+			e:locInfo="withoutLoc" ext="zip" type="cortex-m4_gcc_withoutLoc"
+			conf="cortex-m4_gcc_withoutLoc" packaging="zip" />
+		<artifact name="slf4ec" e:arch="cortex-m4" e:compiler="iar"
+			e:locInfo="withLoc" ext="zip" type="cortex-m4_iar_withLoc" conf="cortex-m4_iar_withLoc"
+			packaging="zip" />
+		<artifact name="slf4ec" e:arch="cortex-m4" e:compiler="iar"
+			e:locInfo="withoutLoc" ext="zip" type="cortex-m4_iar_withoutLoc"
+			conf="cortex-m4_iar_withoutLoc" packaging="zip" />
+		<artifact name="doc" ext="zip" type="html" conf="artifacts"
+			packaging="zip" />
+		<artifact name="tests" ext="zip" type="xUnit" conf="artifacts"
+			packaging="zip" />
+	</publications>
+</ivy-module>

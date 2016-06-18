@@ -6,7 +6,7 @@
 #              |____|   |__|  |__|____/____/__(____  /___|  /__|                #
 #                                                  \/     \/                    #
 #                                         Networks Inc.                         #
-# File:    Makefile                                                             #
+# File:    slf4ec.mk                                                            #
 #                                                                               #
 # Author:  Jérémie Faucher-Goulet                                               #
 #                                                                               #
@@ -34,74 +34,48 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     #
 # THE SOFTWARE.                                                                 #
 #################################################################################
-
-IAR_LICENSE_SERVER ?= [PUT YOUR LICENSE SERVER FQDN HERE]
+SLF4EC_ROOT			:= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 #################################################################################
 # Constants
 #################################################################################
 
-ARCH ?= cortex-m4
+SLF4EC_NAME := slf4ec
 
 #################################################################################
-# Cross compiler
+# Current configuration
 #################################################################################
-ifeq ($(COMPILER),$(IAR_COMPILER))
-    CROSS_COMPILE := $(ARM_IAR_HOME)\bin
-    CC := "$(CROSS_COMPILE)\iccarm.exe"
-    AR := "$(CROSS_COMPILE)\iarchive.exe"
-else ifeq ($(COMPILER),$(GCC_COMPILER))
-    CROSS_COMPILE := $(ARM_GCC_HOME)/bin/arm-none-eabi-
-    CC := "$(CROSS_COMPILE)gcc"
-    OBJCOPY := "$(CROSS_COMPILE)objcopy"
-    OBJDUMP := "$(CROSS_COMPILE)objdump"
-    SIZE := "$(CROSS_COMPILE)size"
-    AR := "$(CROSS_COMPILE)ar"
+
+ifdef ARCH
+    SLF4EC_ARCH			?= ${ARCH}
 endif
 
-#################################################################################
-# Compiler options
-#################################################################################
+ifdef COMPILER
+    SLF4EC_COMPILER		?= ${COMPILER}
+endif
 
-ifeq ($(COMPILER), iar)
-    CFLAGS += --cpu=Cortex-M4 --cpu_mode=thumb
+ifdef DEBUG
+    SLF4EC_CONFIG		:= debug
 else
-    CFLAGS += -mabi=aapcs -mthumb -march=armv7e-m -mtune=cortex-m4 -mlong-calls -mno-unaligned-access
-    LDFLAGS += -march=armv7e-m -mtune=cortex-m4 -mthumb -lm -mabi=aapcs
+    SLF4EC_CONFIG		:= release
 endif
 
-#################################################################################
-# Dependency checks
-#################################################################################
-
-# Check for availability of ARM Toolchain for cross-compiation
-ifeq ($(COMPILER),$(GCC_COMPILER))
-ifndef ARM_GCC_HOME
-    $(error ARM_GCC_HOME must point to the ARM Toolchain to support cross-compilation)
-endif
-else ifeq ($(COMPILER),$(IAR_COMPILER))
-ifndef ARM_IAR_HOME
-    $(error ARM_IAR_HOME must point to the ARM Toolchain to support cross-compilation)
-endif
-ifneq ($(OS),Windows_NT)
-    $(error $(COMPILER) is only supported on Windows)
-endif
+ifdef USE_LOCATION_INFO
+    SLF4EC_USELOC		:= withLoc
 else
-    $(error $(COMPILER) is not supported!)
+    SLF4EC_USELOC		:= withoutLoc
 endif
 
 #################################################################################
-# Configure IAR License manager
+# Paths and project structure
 #################################################################################
+SLF4EC_INCDIR			:= include
+SLF4EC_SRCDIR			:= src
+SLF4EC_BINDIR			:= bin
 
-# Check for availability of ARM IAR Toolchain
-ifeq ($(COMPILER),$(IAR_COMPILER))
-    ifndef IAR_LICENSE_MGR_HOME
-        $(error IAR_LICENSE_MGR_HOME must point to the directory where the IAR License Manager is located for IAR compilation)
-    endif
-endif
+SLF4EC_PATH		:= $(SLF4EC_BINDIR)/$(SLF4EC_ARCH)/$(SLF4EC_COMPILER)/$(SLF4EC_USELOC)/$(SLF4EC_CONFIG)
 
-# Configure IAR license
-ifeq ($(COMPILER),$(IAR_COMPILER))
-    $(info IAR License configuration: $(shell $(IAR_LICENSE_MGR_EXEC) -s $(IAR_LICENSE_SERVER) -p ARM.EW))
-endif
+SLF4EC_LIB		:= $(SLF4EC_NAME).a
+
+# Generated lib file
+SLF4EC_FILE		:= $(SLF4EC_PATH)/$(SLF4EC_LIB)

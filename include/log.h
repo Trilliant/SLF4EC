@@ -164,4 +164,16 @@
 #define logTest(logCategory, ...) \
     TOKEN_PASTE(_logTest, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
+/**
+ * Checks if logging is active for the specified @p logCategory and @p logLevel.
+ *
+ * @param[in] logCategory ::LogCategory to check
+ * @param[in] logLevel LogLevel to check
+ *
+ * @retval true if the @p logLevel is active for the given @p logCategory.
+ * @retval false if the @p logLevel is NOT active for the given @p category.
+ */
+#define logIsActive(logCategory, logLevel) \
+    (logCategory.currentLogLevel >= logLevel)
+
 #endif /* SIMPLELOG_H_ */

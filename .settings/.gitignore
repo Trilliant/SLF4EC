@@ -5,3 +5,5 @@
 !.gitignore
 !org.eclipse.core.resources.prefs
 !language.settings.xml
+!org.eclipse.cdt.core.prefs
+

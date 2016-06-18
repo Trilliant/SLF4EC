@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-settings>
+	<settings defaultResolver="artifactory" />
+	<!--Authentication required for publishing (deployment). 'Artifactory Realm' is the realm used by Artifactory so don't change it.-->
+	<credentials host="ARTIFACTORY_HOST" realm="Artifactory Realm" username="ARTIFACTORY_USER" passwd="ARTIFACTORY_PASSWORD" />
+	<resolvers>
+	<url name="artifactory">
+        <ivy pattern="http://ARTIFACTORY_REPO_URL/[organisation]/[module]/[revision]/[artifact].xml" />
+		<artifact pattern="http://ARTIFACTORY_REPO_URL/[organisation]/[module]/[revision](/[arch])(/[compiler])(/[locInfo])/[artifact](-[classifier]).[ext]"/>
+    </url>
+  </resolvers>
+</ivy-settings>

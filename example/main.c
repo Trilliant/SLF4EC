@@ -77,6 +77,16 @@ int main()
     logInfo(GUI, "This line should not be logged");
     logInfo(Network, "While this line should be");
 
+    // Demonstrate logIsActive() macro
+    if (logIsActive(Network, LEVEL_WARN))
+    {
+        printf("This printf should have been called\n");
+    }
+    if (logIsActive(Network, LEVEL_TRACE))
+    {
+        printf("This printf should NOT have been called\n");
+    }
+
     setLevels(LEVEL_MAX);
 
     // Use the API to change a specific logger by name.

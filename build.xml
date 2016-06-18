@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="slf4ec" default="all" basedir=".">
+	<property environment="env" />
+	<!-- Define Ivy Ant Tasks -->
+	<path id="ivy.lib.path">
+		<fileset dir="${env.IVY_HOME}" includes="*.jar" />
+	</path>
+	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+
+	<ivy:settings file="tools/build/ivysettings.xml" />
+
+	<target name="version" description="Genreates version number">
+		<exec dir="${basedir}" executable="sh" outputproperty="slf4ec_version">
+			<arg value="tools/build/versionProperty.sh" />
+			<arg value="console" />
+		</exec>
+		<echo>${slf4ec_version}</echo>
+	</target>
+
+	<target name="build" description="Creates all the binary artifacts">
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="package" />
+			<arg value="USE_LOCATION_INFO=1" />
+		</exec>
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="package" />
+		</exec>
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="package" />
+			<arg value="ARCH=cortex-m4" />
+			<arg value="USE_LOCATION_INFO=1" />
+		</exec>
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="package" />
+			<arg value="ARCH=cortex-m4" />
+		</exec>
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="package" />
+			<arg value="COMPILER=iar" />
+			<arg value="ARCH=cortex-m4" />
+			<arg value="USE_LOCATION_INFO=1" />
+		</exec>
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="package" />
+			<arg value="ARCH=cortex-m4" />
+			<arg value="COMPILER=iar" />
+		</exec>
+	</target>
+
+	<target name="artifacts" description="Creates all the extra artifacts">
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="artifacts" />
+		</exec>
+	</target>
+
+	<target name="publish" depends="version" description="Publishes SLF4EC into Artifactory">
+		<ivy:resolve />
+		<ivy:publish resolver="artifactory" pubrevision="${slf4ec_version}" status="release">
+			<artifacts pattern="artifacts/[artifact].[ext]" />
+			<artifacts pattern="bin/[arch]/[compiler]/[locInfo]/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+
+	<target name="all" depends="build,artifacts" description="Called by Jenkins">
+	</target>
+</project>

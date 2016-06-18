@@ -106,8 +106,8 @@ LogResult nfLog1(const LogCategory* category, const uint8_t level, const char* f
 /**
  * Private function called by macros to log with location information.
  */
-LogResult yfLog0(const char* file, const uint_fast32_t line, const char* function, const LogCategory* category, const uint8_t level, const char* msg);
-LogResult yfLog1(const char* file, const uint_fast32_t line, const char* function, const LogCategory* category, const uint8_t level, const char* formatStr, ...);
+LogResult yfLog0(const char* file, const uint32_t line, const char* function, const LogCategory* category, const uint8_t level, const char* msg);
+LogResult yfLog1(const char* file, const uint32_t line, const char* function, const LogCategory* category, const uint8_t level, const char* formatStr, ...);
 #endif
 
 /**

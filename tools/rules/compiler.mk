@@ -6,7 +6,7 @@
 #              |____|   |__|  |__|____/____/__(____  /___|  /__|                #
 #                                                  \/     \/                    #
 #                                         Networks Inc.                         #
-# File:    Makefile                                                             #
+# File:    compiler.mk                                                          #
 #                                                                               #
 # Author:  Jérémie Faucher-Goulet                                               #
 #                                                                               #
@@ -35,73 +35,34 @@
 # THE SOFTWARE.                                                                 #
 #################################################################################
 
-IAR_LICENSE_SERVER ?= [PUT YOUR LICENSE SERVER FQDN HERE]
+IAR_COMPILER := iar
+GCC_COMPILER := gcc
 
-#################################################################################
-# Constants
-#################################################################################
+# Default compiler is GCC
+COMPILER ?= $(GCC_COMPILER)
 
-ARCH ?= cortex-m4
+#To lower case
+override COMPILER := $(shell echo "$(COMPILER)" | tr '[:upper:]' '[:lower:]')
 
-#################################################################################
-# Cross compiler
-#################################################################################
-ifeq ($(COMPILER),$(IAR_COMPILER))
-    CROSS_COMPILE := $(ARM_IAR_HOME)\bin
-    CC := "$(CROSS_COMPILE)\iccarm.exe"
-    AR := "$(CROSS_COMPILE)\iarchive.exe"
-else ifeq ($(COMPILER),$(GCC_COMPILER))
-    CROSS_COMPILE := $(ARM_GCC_HOME)/bin/arm-none-eabi-
-    CC := "$(CROSS_COMPILE)gcc"
-    OBJCOPY := "$(CROSS_COMPILE)objcopy"
-    OBJDUMP := "$(CROSS_COMPILE)objdump"
-    SIZE := "$(CROSS_COMPILE)size"
-    AR := "$(CROSS_COMPILE)ar"
-endif
-
-#################################################################################
+################################################################################
 # Compiler options
-#################################################################################
+################################################################################
 
-ifeq ($(COMPILER), iar)
-    CFLAGS += --cpu=Cortex-M4 --cpu_mode=thumb
-else
-    CFLAGS += -mabi=aapcs -mthumb -march=armv7e-m -mtune=cortex-m4 -mlong-calls -mno-unaligned-access
-    LDFLAGS += -march=armv7e-m -mtune=cortex-m4 -mthumb -lm -mabi=aapcs
-endif
-
-#################################################################################
-# Dependency checks
-#################################################################################
-
-# Check for availability of ARM Toolchain for cross-compiation
-ifeq ($(COMPILER),$(GCC_COMPILER))
-ifndef ARM_GCC_HOME
-    $(error ARM_GCC_HOME must point to the ARM Toolchain to support cross-compilation)
-endif
-else ifeq ($(COMPILER),$(IAR_COMPILER))
-ifndef ARM_IAR_HOME
-    $(error ARM_IAR_HOME must point to the ARM Toolchain to support cross-compilation)
-endif
-ifneq ($(OS),Windows_NT)
-    $(error $(COMPILER) is only supported on Windows)
-endif
-else
-    $(error $(COMPILER) is not supported!)
-endif
-
-#################################################################################
-# Configure IAR License manager
-#################################################################################
-
-# Check for availability of ARM IAR Toolchain
 ifeq ($(COMPILER),$(IAR_COMPILER))
-    ifndef IAR_LICENSE_MGR_HOME
-        $(error IAR_LICENSE_MGR_HOME must point to the directory where the IAR License Manager is located for IAR compilation)
+    CFLAGS += -e --vla
+    ARFLAGS += --create
+else ifeq ($(COMPILER),$(GCC_COMPILER))
+    CFLAGS += -c
+    CFLAGS += -fdata-sections -ffunction-sections
+    CFLAGS += -Wall -Wextra -fdiagnostics-show-option -std=gnu99
+    ifdef DEBUG
+        CFLAGS += -g3 -O0
+    else
+        CFLAGS += -O1
     endif
-endif
-
-# Configure IAR license
-ifeq ($(COMPILER),$(IAR_COMPILER))
-    $(info IAR License configuration: $(shell $(IAR_LICENSE_MGR_EXEC) -s $(IAR_LICENSE_SERVER) -p ARM.EW))
+    
+    LDFLAGS += -Wl,--gc-sections -Wl,--cref
+    ARFLAGS += rcs
+else
+    $(error Unsupported compiler: $(COMPILER))
 endif

@@ -41,5 +41,5 @@ int main(void)
     const UnitTest tests[] = {
         LOG_TESTS};
 
-    return run_tests(tests, "SLF4EC");
+    return run_tests(tests, "slf4ec");
 }

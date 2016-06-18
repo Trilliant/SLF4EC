@@ -48,12 +48,12 @@ static bool isInitialized = false;
 
 static bool isCategoryActive(const LogCategory* const category, const uint8_t* const level);
 static void _privateLog(const char* const file,
-                        const uint_fast32_t* const line,
+                        const uint32_t* const line,
                         const char* const function,
                         const LogCategory* const category,
                         const uint8_t* const level,
                         const char* const formatStr,
-                        const va_list* const vaList);
+                        va_list* const vaList);
 
 uint8_t getCategories(LogCategory* const** _categories)
 {
@@ -194,12 +194,12 @@ LogResult noLog()
  * Function to avoid duplicate code inside nfLog1() and yfLog1().
  */
 inline static LogResult handleLog0(const char* const file,
-                                   const uint_fast32_t* const line,
+                                   const uint32_t* const line,
                                    const char* const function,
                                    const LogCategory* const category,
                                    const uint8_t* const level,
                                    const char* const formatStr,
-                                   const va_list* const vaList)
+                                   va_list* const vaList)
 {
     LogResult returnCode = LOG_OK;
     if (isInitialized)
@@ -231,7 +231,7 @@ LogResult nfLog1(const LogCategory* const category, const uint8_t level, const c
 }
 #else
 LogResult yfLog0(const char* const file,
-                 const uint_fast32_t line,
+                 const uint32_t line,
                  const char* const function,
                  const LogCategory* const category,
                  const uint8_t level,
@@ -242,7 +242,7 @@ LogResult yfLog0(const char* const file,
 }
 
 LogResult yfLog1(const char* const file,
-                 const uint_fast32_t line,
+                 const uint32_t line,
                  const char* const function,
                  const LogCategory* const category,
                  const uint8_t level,
@@ -253,12 +253,12 @@ LogResult yfLog1(const char* const file,
 #endif
 
 static void _privateLog(const char* const file,
-                        const uint_fast32_t* const line,
+                        const uint32_t* const line,
                         const char* const function,
                         const LogCategory* const category,
                         const uint8_t* const level,
                         const char* const formatStr,
-                        const va_list* const vaList)
+                        va_list* const vaList)
 {
     const uint64_t timestamp = logTimeApi();
 

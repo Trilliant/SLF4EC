@@ -31,6 +31,7 @@
  * THE SOFTWARE.
  */
 
+#include <stdlib.h>
 #include <inttypes.h>
 #include <string.h>
 #include <stdio.h>
@@ -45,8 +46,8 @@
 static void logFull(const LogRecord* const logRecord);
 static void logMsgOnly(const LogRecord* const logRecord);
 
-#define PRINTF_WITH_LOCATION "[%s][%s][%" PRIu64 "]%s:%d(%s) - ", logLevelNames[*record->level], record->category->name, *record->timestamp, \
-                             record->file + (fileLength > MAX_FILE_LENGTH ? (fileLength - MAX_FILE_LENGTH) : 0), *record->line,              \
+#define PRINTF_WITH_LOCATION "[%s][%s][%" PRIu64 "]%s:%" PRIu32 "(%s) - ", logLevelNames[*record->level], record->category->name, *record->timestamp, \
+                             record->file + (fileLength > MAX_FILE_LENGTH ? (fileLength - MAX_FILE_LENGTH) : 0), *record->line,                       \
                              record->function + (fctLength > MAX_FCT_LENGHT ? (fctLength - MAX_FCT_LENGHT) : 0)
 #define PRINTF_WITHOUT_LOCATION "[%s][%s][%" PRIu64 "] - ", logLevelNames[*record->level], record->category->name, *record->timestamp
 #define VPRINTF record->formatStr, *record->vaList
@@ -74,8 +75,8 @@ void logToStdOut(const LogRecord* const logRecord, const LogFormat format)
 static void logMsgOnly(const LogRecord* const record)
 {
 #ifdef UNIT_TESTING
-    char suffixMsg[4096];
-    char fullMsg[8192];
+    char suffixMsg[4096] = {0};
+    char fullMsg[8192] = {0};
 
     vsprintf(suffixMsg, VPRINTF);
     strcat(fullMsg, suffixMsg);
@@ -94,8 +95,8 @@ static void logFull(const LogRecord* const record)
     if (record->file == NULL || record->line == NULL || record->function == NULL)
     {
 #ifdef UNIT_TESTING
-        char suffixMsg[4096];
-        char fullMsg[8192];
+        char suffixMsg[4096] = {0};
+        char fullMsg[8192] = {0};
 
         sprintf(fullMsg, PRINTF_WITHOUT_LOCATION);
         vsprintf(suffixMsg, VPRINTF);
@@ -115,8 +116,8 @@ static void logFull(const LogRecord* const record)
         size_t fctLength = strlen(record->function);
 
 #ifdef UNIT_TESTING
-        char suffixMsg[4096];
-        char fullMsg[8192];
+        char suffixMsg[4096] = {0};
+        char fullMsg[8192] = {0};
 
         sprintf(fullMsg, PRINTF_WITH_LOCATION);
         vsprintf(suffixMsg, VPRINTF);

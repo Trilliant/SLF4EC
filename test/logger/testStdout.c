@@ -61,7 +61,7 @@ void callPublishFullFormatWithoutFile(void** state)
 
     // Prepare data
     uint8_t dummyLevel = LEVEL_ERROR;
-    unsigned int dummyLine = __LINE__;
+    const uint32_t dummyLine = __LINE__;
     const char* const dummyFile = NULL;
     const char* const dummyFct = __FUNCTION__;
     const uint64_t dummyTimestamp = -1LLU;
@@ -73,7 +73,7 @@ void callPublishFullFormatWithoutFile(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage\n", stdoutCategory.name, -1LLU);
+    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage\n", stdoutCategory.name, (uint64_t) -1);
 
     // Check result
     assert_string_equal(expected, message);
@@ -96,7 +96,7 @@ void callPublishFullFormatWithoutLine(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage\n", stdoutCategory.name, -1LLU);
+    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage\n", stdoutCategory.name, (uint64_t) -1);
 
     // Check result
     assert_string_equal(expected, message);
@@ -108,7 +108,7 @@ void callPublishFullFormatWithoutFunction(void** state)
 
     // Prepare data
     uint8_t dummyLevel = LEVEL_ERROR;
-    unsigned int dummyLine = __LINE__;
+    const uint32_t dummyLine = __LINE__;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = NULL;
     const uint64_t dummyTimestamp = -1LLU;
@@ -120,7 +120,7 @@ void callPublishFullFormatWithoutFunction(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage\n", stdoutCategory.name, -1LLU);
+    sprintf(expected, "[ERROR][%s][%" PRIu64 "] - dummyMessage\n", stdoutCategory.name, (uint64_t) -1);
 
     // Check result
     assert_string_equal(expected, message);
@@ -132,7 +132,7 @@ void callPublishFullFormatWith(void** state)
 
     // Prepare data
     uint8_t dummyLevel = LEVEL_ERROR;
-    unsigned int dummyLine = __LINE__;
+    const uint32_t dummyLine = __LINE__;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = __FUNCTION__;
     const uint64_t dummyTimestamp = -1LLU;
@@ -146,7 +146,7 @@ void callPublishFullFormatWith(void** state)
     const char* realFct = dummyFct + (strlen(dummyFct) - 10);
     const char* realFile = dummyFile + (strlen(dummyFile) - 15);
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage\n", stdoutCategory.name, -1LLU, realFile, dummyLine, realFct);
+    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage\n", stdoutCategory.name, (uint64_t) -1, realFile, dummyLine, realFct);
 
     // Check result
     assert_string_equal(expected, message);
@@ -158,7 +158,7 @@ void tstSmlFct(void** state)
 
     // Prepare data
     uint8_t dummyLevel = LEVEL_ERROR;
-    unsigned int dummyLine = __LINE__;
+    const uint32_t dummyLine = __LINE__;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = __FUNCTION__;
     const uint64_t dummyTimestamp = -1LLU;
@@ -171,7 +171,7 @@ void tstSmlFct(void** state)
     // Build expected result
     const char* realFile = dummyFile + (strlen(dummyFile) - 15);
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage\n", stdoutCategory.name, -1LLU, realFile, dummyLine, dummyFct);
+    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage\n", stdoutCategory.name, (uint64_t) -1, realFile, dummyLine, dummyFct);
 
     // Check result
     assert_string_equal(expected, message);
@@ -183,7 +183,7 @@ void tstSmlFile(void** state)
 
     // Prepare data
     uint8_t dummyLevel = LEVEL_ERROR;
-    unsigned int dummyLine = __LINE__;
+    const uint32_t dummyLine = __LINE__;
     const char* const dummyFile = "smallFile";
     const char* const dummyFct = __FUNCTION__;
     const uint64_t dummyTimestamp = -1LLU;
@@ -195,7 +195,7 @@ void tstSmlFile(void** state)
 
     // Build expected result
     char expected[8192];
-    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage\n", stdoutCategory.name, -1LLU, dummyFile, dummyLine, dummyFct);
+    sprintf(expected, "[ERROR][%s][%" PRIu64 "]%s:%d(%s) - dummyMessage\n", stdoutCategory.name, (uint64_t) -1, dummyFile, dummyLine, dummyFct);
 
     // Check result
     assert_string_equal(expected, message);
@@ -207,7 +207,7 @@ void callPublishMsgOnly(void** state)
 
     // Prepare data
     uint8_t dummyLevel = LEVEL_ERROR;
-    unsigned int dummyLine = __LINE__;
+    const uint32_t dummyLine = __LINE__;
     const char* const dummyFile = __FILE__;
     const char* const dummyFct = __FUNCTION__;
     const uint64_t dummyTimestamp = -1LLU;
