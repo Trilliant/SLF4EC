@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * Test slf4ec.c
+ * Logger for printing to STDOUT
  *
  * @author Jérémie Faucher-Goulet
  * 
@@ -31,37 +31,32 @@
  * THE SOFTWARE.
  */
 
-#ifndef TEST_LOG_H_
-#define TEST_LOG_H_
+#ifndef STDOUT_H_
+#define STDOUT_H_
 
-#include "log.h"
-#include "slf4ecCtrl.h"
-#include "testStdout.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define LOG_TESTS                           \
-    unit_test(initializeBadParams),         \
-        unit_test(setLevelsNotInitialized), \
-        unit_test(logNotInitialized),       \
-        unit_test(initializeLogOK),         \
-        unit_test(setBadLogLevel),          \
-        unit_test(testGetCategories),       \
-        unit_test(testGetLoggers),          \
-        unit_test(testLogLevel),            \
-        unit_test(testLocationInfo),        \
-        unit_test(testLogInfo),             \
-        unit_test(testLogLevelNames),       \
-        STDOUT_TESTS
+#include "slf4ec/slf4ecTypes.h"
 
-void initializeBadParams(void** state);
-void setLevelsNotInitialized(void** state);
-void logNotInitialized(void** state);
-void initializeLogOK(void** state);
-void setBadLogLevel(void** state);
-void testGetCategories(void** state);
-void testGetLoggers(void** state);
-void testLogLevel(void** state);
-void testLocationInfo(void** state);
-void testLogInfo(void** state);
-void testLogLevelNames(void** state);
+/**
+ * Function to be called when recording a log (for logger configuration)
+ *
+ * @param [in] logRecord Pointer to the record to be logged.
+ * @param [in] format Format to be used when recording this log.
+ */
+void logToStdOut(const LogRecord* const logRecord, const LogFormat format);
 
-#endif /* TEST_LOG_H_ */
+/**
+ * Function to be called when initializing this logger (for logger configuration)
+ *
+ *  @param [in] param Pointer to parameters used when configuring this logger.
+ */
+void initStdOut(const void* const param);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* STDOUT_H_ */

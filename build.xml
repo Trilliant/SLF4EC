@@ -53,6 +53,20 @@
 		</exec>
 	</target>
 
+	<target name="clean" description="Call 'make clean' on basedir">
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="clean" />
+		</exec>
+	</target>
+	
+	<target name="test" description="Execute unit tests">
+		<exec dir="${basedir}" executable="make" failonerror="true">
+			<arg value="-f" />
+			<arg value="test/Makefile" />
+			<arg value="all" />
+		</exec>
+	</target>
+
 	<target name="publish" depends="version" description="Publishes SLF4EC into Artifactory">
 		<ivy:resolve />
 		<ivy:publish resolver="artifactory" pubrevision="${slf4ec_version}" status="release">
@@ -61,6 +75,6 @@
 		</ivy:publish>
 	</target>
 
-	<target name="all" depends="build,artifacts" description="Called by Jenkins">
+	<target name="all" depends="clean,build,test,artifacts" description="Called by Jenkins">
 	</target>
 </project>

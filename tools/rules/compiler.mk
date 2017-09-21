@@ -56,9 +56,9 @@ else ifeq ($(COMPILER),$(GCC_COMPILER))
     CFLAGS += -fdata-sections -ffunction-sections
     CFLAGS += -Wall -Wextra -fdiagnostics-show-option -std=gnu99
     ifdef DEBUG
-        CFLAGS += -g3 -O0
+        CFLAGS += -g3 -Og
     else
-        CFLAGS += -O1
+        CFLAGS += -Os
     endif
     
     LDFLAGS += -Wl,--gc-sections -Wl,--cref

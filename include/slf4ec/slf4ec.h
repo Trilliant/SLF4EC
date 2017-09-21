@@ -34,7 +34,11 @@
 #ifndef SLF4EC_H_
 #define SLF4EC_H_
 
-#include "slf4ecTypes.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "slf4ec/slf4ecTypes.h"
 
 #if defined(UNIT_TESTING) && !defined(USE_LOCATION_INFO)
 #define USE_LOCATION_INFO
@@ -218,6 +222,10 @@ LogResult noLog();
     nfLog0(&logCategory, level, __VA_ARGS__)
 #define _log1(logCategory, level, ...) \
     nfLog1(&logCategory, level, __VA_ARGS__)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* SLF4EC_H_ */

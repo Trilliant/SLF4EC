@@ -34,7 +34,11 @@
 #ifndef LOG_CTRL_H_
 #define LOG_CTRL_H_
 
-#include "slf4ecTypes.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "slf4ec/slf4ecTypes.h"
 
 #ifndef COMPILED_LOG_LEVEL
 #define COMPILED_LOG_LEVEL LEVEL_MAX
@@ -88,5 +92,9 @@ uint8_t getCategories(LogCategory* const** categories);
  * @return Number of configured loggers
  */
 uint8_t getLoggers(Logger* const** loggers);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LOG_CTRL_H_ */

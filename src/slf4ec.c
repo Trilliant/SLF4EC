@@ -32,8 +32,8 @@
  */
 
 #include <stdbool.h>
-#include "slf4ec.h"
-#include "slf4ecCtrl.h"
+#include "slf4ec/slf4ec.h"
+#include "slf4ec/slf4ecCtrl.h"
 
 #define LOGGER_ALREADY_INITIALIZED "Logger already initialized!\n"
 #define LOGGER_NOT_INITIALIZED "Logger is not initialized!\n"

@@ -82,37 +82,16 @@ SONAR_BRANCH := $(shell echo $(SLF4EC_BRANCH) | sed -e 's/\//_/g')
 #################################################################################
 
 # Default achitecture is x86
-ifdef ARCH
-    SLF4EC_ARCH			?= ${ARCH}
-endif
-SLF4EC_ARCH				?= x86
-
-# Default compiler is GCC
-ifdef COMPILER
-    SLF4EC_COMPILER		?= ${COMPILER}
-endif
+ARCH ?= x86
 
 #################################################################################
 # Compiler config
 #################################################################################
 include $(ROOT)/$(TOOL_DIR)/rules/makeRules.mk
 include $(ROOT)/slf4ec.mk
-ifneq ($(ARCH),)
-    include $(ROOT)/$(SLF4EC_ARCH).mk
-endif
+include $(ROOT)/$(SLF4EC_ARCH).mk
 
 SLF4EC_PACKAGE := $(ROOT)/$(SLF4EC_BINDIR)/$(SLF4EC_ARCH)/$(SLF4EC_COMPILER)/$(SLF4EC_USELOC)/$(SLF4EC_NAME).zip
-
-ifeq ($(SLF4EC_ARCH),x86)
-    AR := ar
-    CC := gcc
-endif
-
-# If PYTHON_HOME and GCOVR_HOME is defined, or LCOV is available, then we can extract coverage data
-ifneq ($(or $(and $(PYTHON_HOME),$(GCOVR_HOME)),$(LCOV_HOME)),)
-    TEST_CFLAGS += -O0 --coverage
-    TEST_LDFLAGS += -lgcov --coverage
-endif
 
 #################################################################################
 # Compiler input
@@ -121,22 +100,12 @@ endif
 libSrc := \
 	$(subst $(ROOT)/,,$(shell $(FIND_EXEC) $(ROOT)/$(SLF4EC_SRCDIR) -name "*.c"))
 
-testSrc := \
-	$(subst $(ROOT)/,,$(shell $(FIND_EXEC) $(ROOT)/$(TEST_DIR) -name "*.c")) \
-	$(CMOCKERY2_DIR)/src/cmockery.c \
-	$(libSrc)
-
 expSrc := \
 	$(subst $(ROOT)/,,$(shell $(FIND_EXEC) $(ROOT)/$(EXAMPLE_DIR) -name "*.c"))
 
 libInc := \
+	include \
 	$(subst $(ROOT)/,,$(sort $(abspath $(dir $(shell $(FIND_EXEC) $(ROOT)/$(SLF4EC_INCDIR) -name "*.h")))))
-
-testInc := \
-	$(subst $(ROOT)/,,$(sort $(abspath $(dir $(shell $(FIND_EXEC) $(ROOT)/$(TEST_DIR) -name "*.h"))))) \
-	$(libInc) \
-	$(CMOCKERY2_DIR)/src \
-	$(CMOCKERY2_DIR)/src/cmockery
 
 expInc := \
 	$(libInc) \
@@ -149,7 +118,6 @@ testBin	:= $(ROOT)/$(SLF4EC_BINDIR)/test
 expBin	:= $(ROOT)/$(SLF4EC_BINDIR)/example
 
 libObj	:= $(addprefix $(libBin)/obj/, $(libSrc:%.c=%.o))
-testObj := $(addprefix $(testBin)/obj/, $(testSrc:%.c=%.o))
 expObj	:= $(addprefix $(expBin)/obj/, $(expSrc:%.c=%.o))
 
 COMPILED_LOG_LEVEL ?= LEVEL_MAX
@@ -181,12 +149,6 @@ $(libBin)/obj/%.o: $(ROOT)/%.c $(mkfile_path)
 	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
 	@echo "Compiling [$<]"
 	$(SILENT_MODE) $(CC) "$<" $(CFLAGS) $(libDef) $(addprefix -I$(ROOT)/,$(libInc)) $(COMPILE_OPTS_$(COMPILER)) -o "$@"  2>&1 | tee -a "$(libBin)/$(COMPILER)-compile.err"
-
-# Rule to build the tests
-$(testBin)/obj/%.o: $(ROOT)/%.c $(mkfile_path)
-	@[ -d "$(dir $@)" ] || mkdir -p "$(dir $@)"
-	@echo "Compiling [$<]"
-	$(SILENT_MODE) $(CC) "$<" $(CFLAGS) $(TEST_CFLAGS) $(testDef) $(addprefix -I$(ROOT)/,$(testInc)) $(COMPILE_OPTS_$(COMPILER)) -o "$@"  2>&1 | tee -a "$(testBin)/$(COMPILER)-compile.err"
 
 # Rule to build the example
 $(expBin)/obj/%.o: $(ROOT)/%.c $(mkfile_path)
@@ -221,46 +183,6 @@ clean:
 	$(SILENT_MODE) rm -rf $(ROOT)/bin
 	$(SILENT_MODE) rm -rf $(ROOT)/$(DOC_DIR)/doxygen
 	$(SILENT_MODE) rm -rf $(ROOT)/$(ARTIFACT_DIR)
-
-.PHONY: test
-test: preBuildTest buildTest run coverage
-
-.PHONY: buildTest
-buildTest: $(testObj)
-	@echo
-	@echo "[Linking $(SLF4EC_NAME)'s unit tests]"
-	$(SILENT_MODE) $(CC) -o $(testBin)/$(SLF4EC_NAME).$(HOST_BINARY_EXT) $(TEST_LDFLAGS) $^ 2>&1 | tee -a "$(testBin)/$(COMPILER)-link.err"
-
-.PHONY: run
-run:
-	@echo
-	@echo "[Executing tests]"
-	$(SILENT_MODE) cd $(testBin) && $(testBin)/$(SLF4EC_NAME).$(HOST_BINARY_EXT) 2>&1
-
-.PHONY: coverage
-coverage:
-# If PYTHON_HOME and GCOVR_HOME is defined, than we can extract coverage data
-ifneq ($(and $(PYTHON_HOME),$(GCOVR_HOME)),)
-	@echo
-	@echo "[Generating XML coverage report]"
-    # Used mainly for Cobertura plugin in SonarQube
-	$(SILENT_MODE) '$(PYTHON_HOME)/python' '$(GCOVR_HOME)/scripts/gcovr' -r $(ROOT) --xml -o '$(testBin)/$(SLF4EC_NAME)_gcovr.xml'
-endif
-ifneq ($(LCOV_HOME),)
-	@echo
-	@echo "[Generating HTML coverage report]"
-	$(SILENT_MODE) rm -rf "$(LCOV_COVERAGE_HTML_DIR)" && mkdir -p "$(LCOV_COVERAGE_HTML_DIR)"
-	@echo "Generating $(LCOV_COVERAGE_INFO_FILE)"
-	$(SILENT_MODE) $(LCOV_CMD) --capture --directory $(testBin) --quiet --no-compat-libtool --output-file $(LCOV_COVERAGE_INFO_FILE) 1>/dev/null 
-	@echo "Generating HTML site in : $(LCOV_COVERAGE_HTML_DIR)"
-	$(SILENT_MODE) $(GENHTML_CMD) $(LCOV_COVERAGE_INFO_FILE) --quiet --output-directory $(LCOV_COVERAGE_HTML_DIR)
-    ifndef JENKINS_HOME
-        ifneq ($(DISABLE_WEB_BROWSER),1)
-			@echo "Opening coverage report in web browser..."
-			$(SILENT_MODE) $(call Launch/Web,$(LCOV_COVERAGE_HTML_DIR)/index.html)
-        endif
-    endif
-endif
 
 #################################################################################
 # Extra Targets
@@ -323,11 +245,11 @@ ifeq ($(COMPILER),$(GCC_COMPILER))
 endif
 
 .PHONY: sonar
-sonar: test preSonar vera rats cppcheck
+sonar: preSonar vera rats cppcheck
 ifdef SONAR_RUNNER_HOME
 	@echo
 	@echo "[Executing sonar analysis]"
-	$(SILENT_MODE) cd $(ROOT) && "$(SONAR)" -Dsonar.projectVersion="$(SLF4EC_VERSION)" -Dsonar.branch="$(SONAR_BRANCH)" -Dsonar.artifact.path="$(ROOT)/$(SLF4EC_FILE)" \
+	$(SILENT_MODE) cd $(ROOT) && "$(SONAR)" -Dsonar.projectVersion="$(SLF4EC_VERSION)" -Dsonar.branch="$(SONAR_BRANCH)" -Dsonar.artifact.path="$(SLF4EC_FILE)" \
 	-Dsonar.cxx.includeDirectories="$(subst $(space),$(comma),$(allInc) $(GCC_DEF_PATHS_WIN))"
 else
 	@echo "ERROR: Cannot execute sonar"

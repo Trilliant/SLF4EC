@@ -34,6 +34,10 @@
 #ifndef LOG_TYPES_H_
 #define LOG_TYPES_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef UNIT_TESTING
 #include <stdlib.h>
 #endif
@@ -190,5 +194,9 @@ typedef struct
     uint8_t currentLogLevel;      /**< Current LogLevel for this logger. Anything below will not be logged. */
     const PublishLog publishFct;  /**< Function to be called to output the event. */
 } Logger;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LOG_TYPES_H_ */

@@ -34,7 +34,11 @@
 #ifndef SIMPLE_LOG_H_
 #define SIMPLE_LOG_H_
 
-#include "slf4ec.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "slf4ec/slf4ec.h"
 
 /**
  * @file
@@ -175,5 +179,9 @@
  */
 #define logIsActive(logCategory, logLevel) \
     (logCategory.currentLogLevel >= logLevel)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SIMPLELOG_H_ */

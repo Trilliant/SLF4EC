@@ -37,8 +37,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "stdout.h"
-#include "slf4ecTypes.h"
+#include "slf4ec/logger/stdout.h"
+#include "slf4ec/slf4ecTypes.h"
 
 LogCategory stdoutCategory = {"stdoutCategory", LEVEL_WARN};
 char message[8192];

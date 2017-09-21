@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * Logger for printing to STDOUT
+ * Tests for stdout.c
  *
  * @author Jérémie Faucher-Goulet
  * 
@@ -31,24 +31,30 @@
  * THE SOFTWARE.
  */
 
-#ifndef STDOUT_H_
-#define STDOUT_H_
+#ifndef TEST_STDOUT_H_
+#define TEST_STDOUT_H_
 
-#include "slf4ecTypes.h"
+#include <cmockery.h>
 
-/**
- * Function to be called when recording a log (for logger configuration)
- *
- * @param [in] logRecord Pointer to the record to be logged.
- * @param [in] format Format to be used when recording this log.
- */
-void logToStdOut(const LogRecord* const logRecord, const LogFormat format);
+#define STDOUT_TESTS                                     \
+    unit_test(callInit),                                 \
+        unit_test(callPublishFullFormatWith),            \
+        unit_test(callPublishFullFormatWithoutFile),     \
+        unit_test(callPublishFullFormatWithoutLine),     \
+        unit_test(callPublishFullFormatWithoutFunction), \
+        unit_test(tstSmlFct),                            \
+        unit_test(tstSmlFile),                           \
+        unit_test(callPublishMsgOnly)
 
-/**
- * Function to be called when initializing this logger (for logger configuration)
- *
- *  @param [in] param Pointer to parameters used when configuring this logger.
- */
-void initStdOut(const void* const param);
+void callInit(void** state);
+void callPublishFullFormatWith(void** state);
+void callPublishFullFormatWithoutFile(void** state);
+void callPublishFullFormatWithoutLine(void** state);
+void callPublishFullFormatWithoutFunction(void** state);
+void callPublishMsgOnly(void** state);
+void tstSmlFct(void** state);
+void tstSmlFile(void** state);
 
-#endif /* STDOUT_H_ */
+void outputMessage(char* message);
+
+#endif /* TEST_STDOUT_H_ */

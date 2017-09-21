@@ -40,8 +40,8 @@
 #include "testStdout.h"
 #endif
 
-#include "slf4ecCtrl.h"
-#include "stdout.h"
+#include "slf4ec/slf4ecCtrl.h"
+#include "slf4ec/logger/stdout.h"
 
 static void logFull(const LogRecord* const logRecord);
 static void logMsgOnly(const LogRecord* const logRecord);

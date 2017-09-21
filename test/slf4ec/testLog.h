@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * Tests for stdout.c
+ * Test slf4ec.c
  *
  * @author Jérémie Faucher-Goulet
  * 
@@ -31,34 +31,37 @@
  * THE SOFTWARE.
  */
 
-#ifndef TEST_STDOUT_H_
-#define TEST_STDOUT_H_
+#ifndef TEST_LOG_H_
+#define TEST_LOG_H_
 
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-#include <inttypes.h>
-#include <cmockery.h>
+#include "slf4ec/log.h"
+#include "slf4ec/slf4ecCtrl.h"
+#include "testStdout.h"
 
-#define STDOUT_TESTS                                     \
-    unit_test(callInit),                                 \
-        unit_test(callPublishFullFormatWith),            \
-        unit_test(callPublishFullFormatWithoutFile),     \
-        unit_test(callPublishFullFormatWithoutLine),     \
-        unit_test(callPublishFullFormatWithoutFunction), \
-        unit_test(tstSmlFct),                            \
-        unit_test(tstSmlFile),                           \
-        unit_test(callPublishMsgOnly)
+#define LOG_TESTS                           \
+    unit_test(initializeBadParams),         \
+        unit_test(setLevelsNotInitialized), \
+        unit_test(logNotInitialized),       \
+        unit_test(initializeLogOK),         \
+        unit_test(setBadLogLevel),          \
+        unit_test(testGetCategories),       \
+        unit_test(testGetLoggers),          \
+        unit_test(testLogLevel),            \
+        unit_test(testLocationInfo),        \
+        unit_test(testLogInfo),             \
+        unit_test(testLogLevelNames),       \
+        STDOUT_TESTS
 
-void callInit(void** state);
-void callPublishFullFormatWith(void** state);
-void callPublishFullFormatWithoutFile(void** state);
-void callPublishFullFormatWithoutLine(void** state);
-void callPublishFullFormatWithoutFunction(void** state);
-void callPublishMsgOnly(void** state);
-void tstSmlFct(void** state);
-void tstSmlFile(void** state);
+void initializeBadParams(void** state);
+void setLevelsNotInitialized(void** state);
+void logNotInitialized(void** state);
+void initializeLogOK(void** state);
+void setBadLogLevel(void** state);
+void testGetCategories(void** state);
+void testGetLoggers(void** state);
+void testLogLevel(void** state);
+void testLocationInfo(void** state);
+void testLogInfo(void** state);
+void testLogLevelNames(void** state);
 
-void outputMessage(char* message);
-
-#endif /* TEST_STDOUT_H_ */
+#endif /* TEST_LOG_H_ */
