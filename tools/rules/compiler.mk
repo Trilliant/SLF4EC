@@ -52,11 +52,11 @@ ifeq ($(COMPILER),$(IAR_COMPILER))
     CFLAGS += -e --vla
     ARFLAGS += --create
 else ifeq ($(COMPILER),$(GCC_COMPILER))
-    CFLAGS += -c
-    CFLAGS += -fdata-sections -ffunction-sections
-    CFLAGS += -Wall -Wextra -fdiagnostics-show-option -std=gnu99
+    CFLAGS += -c -g3 -std=gnu99
+    CFLAGS += -funwind-tables -fdata-sections -ffunction-sections
+    CFLAGS += -Wall -Wextra -fdiagnostics-show-option
     ifdef DEBUG
-        CFLAGS += -g3 -Og
+        CFLAGS += -O
     else
         CFLAGS += -Os
     endif
