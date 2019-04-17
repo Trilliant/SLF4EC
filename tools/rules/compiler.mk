@@ -56,7 +56,7 @@ else ifeq ($(COMPILER),$(GCC_COMPILER))
     CFLAGS += -funwind-tables -fdata-sections -ffunction-sections
     CFLAGS += -Wall -Wextra -fdiagnostics-show-option
     ifdef DEBUG
-        CFLAGS += -O
+        CFLAGS += -O0
     else
         CFLAGS += -Os
     endif
