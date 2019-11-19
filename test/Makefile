@@ -66,10 +66,7 @@ CMOCKERY2DIR := contrib/cmockery2
 
 BINDIR := $(abspath $(ROOT)/bin/test)
 
-LCOV_COVERAGE_HTML_DIR := $(BINDIR)/coverage_report_html
-LCOV_COVERAGE_INFO_FILE := $(LCOV_COVERAGE_HTML_DIR)/coverage.info
-LCOV_CMD := $(LCOV_HOME)/lcov
-GENHTML_CMD := $(LCOV_HOME)/genhtml
+COVERAGE_HTML_DIR := $(BINDIR)/coverage_report_html
 
 ################################################################################
 # Compiler options
@@ -288,22 +285,19 @@ all: coverage
 .PHONY: coverage
 coverage: runTests
 ifneq ($(and $(PYTHON_HOME),$(GCOVR_HOME)),)
-	@echo
-	@echo "[Generating XML coverage report]"
-	$(SILENT_MODE) '$(PYTHON_HOME)/python' '$(GCOVR_HOME)/scripts/gcovr' -r $(ROOT) --xml -o '$(BINDIR)/$(LIB_NAME)_gcovr.xml'
+	$(SILENT_MODE) rm -rf "$(COVERAGE_HTML_DIR)" && mkdir -p "$(COVERAGE_HTML_DIR)"
 	@echo
 	@echo "[Generating HTML coverage report]"
-	$(SILENT_MODE) rm -rf "$(LCOV_COVERAGE_HTML_DIR)" && mkdir -p "$(LCOV_COVERAGE_HTML_DIR)"
-	@echo "Generating $(LCOV_COVERAGE_INFO_FILE)"
-	$(SILENT_MODE) cd $(ROOT) && $(LCOV_CMD) --capture --directory $(BINDIR) --quiet --no-compat-libtool --output-file $(LCOV_COVERAGE_INFO_FILE) 1>/dev/null 
-	@echo "Generating HTML site in : $(LCOV_COVERAGE_HTML_DIR)"
-	$(SILENT_MODE) cd $(ROOT) && $(GENHTML_CMD) $(LCOV_COVERAGE_INFO_FILE) --quiet --output-directory $(LCOV_COVERAGE_HTML_DIR)
+	$(SILENT_MODE) '$(PYTHON_HOME)/python' '$(GCOVR_HOME)/scripts/gcovr' -r $(ROOT) --exclude 'test/.*' --html --html-details -o '$(COVERAGE_HTML_DIR)/index.html'
     ifndef JENKINS_HOME
         ifneq ($(DISABLE_WEB_BROWSER),1)
 			@echo "Open coverage report in browser"
-			$(SILENT_MODE) $(call Launch/Web,$(LCOV_COVERAGE_HTML_DIR)/index.html)
+			$(SILENT_MODE) $(call Launch/Web,$(COVERAGE_HTML_DIR)/index.html)
         endif
     endif
+	@echo
+	@echo "[Generating XML coverage report]"
+	$(SILENT_MODE) '$(PYTHON_HOME)/python' '$(GCOVR_HOME)/scripts/gcovr' -r $(ROOT) --exclude 'test/.*' --xml -o '$(BINDIR)/$(LIB_NAME)_gcovr.xml'
 endif
 
 .PHONY: runTests
