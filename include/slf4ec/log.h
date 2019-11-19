@@ -274,7 +274,7 @@ extern "C" {
  * @retval false if the @p logLevel is NOT active for the given @p category.
  */
 #define logIsActive(logCategory, logLevel) \
-    (logCategory.currentLogLevel >= logLevel)
+    ((logCategory).currentLogLevel >= logLevel)
 
 #ifdef __cplusplus
 }
