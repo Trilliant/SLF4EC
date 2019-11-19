@@ -20,25 +20,10 @@
 	<target name="build" description="Creates all the binary artifacts">
 		<exec dir="${basedir}" executable="make" failonerror="true">
 			<arg value="package" />
-			<arg value="USE_LOCATION_INFO=1" />
-		</exec>
-		<exec dir="${basedir}" executable="make" failonerror="true">
-			<arg value="package" />
 		</exec>
 		<exec dir="${basedir}" executable="make" failonerror="true">
 			<arg value="package" />
 			<arg value="ARCH=cortex-m4" />
-			<arg value="USE_LOCATION_INFO=1" />
-		</exec>
-		<exec dir="${basedir}" executable="make" failonerror="true">
-			<arg value="package" />
-			<arg value="ARCH=cortex-m4" />
-		</exec>
-		<exec dir="${basedir}" executable="make" failonerror="true">
-			<arg value="package" />
-			<arg value="COMPILER=iar" />
-			<arg value="ARCH=cortex-m4" />
-			<arg value="USE_LOCATION_INFO=1" />
 		</exec>
 		<exec dir="${basedir}" executable="make" failonerror="true">
 			<arg value="package" />
@@ -71,7 +56,7 @@
 		<ivy:resolve />
 		<ivy:publish resolver="artifactory" pubrevision="${slf4ec_version}" status="release">
 			<artifacts pattern="artifacts/[artifact].[ext]" />
-			<artifacts pattern="bin/[arch]/[compiler]/[locInfo]/[artifact].[ext]" />
+			<artifacts pattern="bin/[arch]/[compiler]/[artifact].[ext]" />
 		</ivy:publish>
 	</target>
 

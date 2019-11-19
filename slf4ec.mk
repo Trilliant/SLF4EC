@@ -60,12 +60,6 @@ else
     SLF4EC_CONFIG		:= release
 endif
 
-ifdef USE_LOCATION_INFO
-    SLF4EC_USELOC		:= withLoc
-else
-    SLF4EC_USELOC		:= withoutLoc
-endif
-
 #################################################################################
 # Paths and project structure
 #################################################################################
@@ -73,7 +67,7 @@ SLF4EC_INCDIR			:= include
 SLF4EC_SRCDIR			:= src
 SLF4EC_BINDIR			:= bin
 
-SLF4EC_PATH		:= $(SLF4EC_BINDIR)/$(SLF4EC_ARCH)/$(SLF4EC_COMPILER)/$(SLF4EC_USELOC)/$(SLF4EC_CONFIG)
+SLF4EC_PATH		:= $(SLF4EC_BINDIR)/$(SLF4EC_ARCH)/$(SLF4EC_COMPILER)/$(SLF4EC_CONFIG)
 
 SLF4EC_LIB		:= $(SLF4EC_NAME).a
 

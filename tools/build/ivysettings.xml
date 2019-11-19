@@ -6,7 +6,7 @@
 	<resolvers>
 	<url name="artifactory">
         <ivy pattern="http://ARTIFACTORY_REPO_URL/[organisation]/[module]/[revision]/[artifact].xml" />
-		<artifact pattern="http://ARTIFACTORY_REPO_URL/[organisation]/[module]/[revision](/[arch])(/[compiler])(/[locInfo])/[artifact](-[classifier]).[ext]"/>
+		<artifact pattern="http://ARTIFACTORY_REPO_URL/[organisation]/[module]/[revision](/[arch])(/[compiler])/[artifact](-[classifier]).[ext]"/>
     </url>
   </resolvers>
 </ivy-settings>

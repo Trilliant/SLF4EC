@@ -167,7 +167,6 @@ LogResult noLog()
     return returnCode;
 }
 
-#ifndef USE_LOCATION_INFO
 LogResult nfLog0(const LogCategory* const category, const uint8_t level, const char* const msg)
 {
     return _privateLog(NULL, NULL, NULL, category, &level, msg, emptyVaList);
@@ -191,7 +190,7 @@ LogResult nfLogv(const LogCategory* category, const uint8_t level, const char* f
     va_end(va);
     return res;
 }
-#else
+
 LogResult yfLog0(const char* const file,
                  const uint32_t line,
                  const char* const function,
@@ -231,7 +230,6 @@ LogResult yfLogv(const char* const file,
     va_end(va);
     return res;
 }
-#endif
 
 static LogResult _privateLog(const char* const file,
                              const uint32_t* const line,
