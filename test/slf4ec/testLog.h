@@ -38,18 +38,22 @@
 #include "slf4ec/slf4ecCtrl.h"
 #include "testStdout.h"
 
-#define LOG_TESTS                           \
-    unit_test(initializeBadParams),         \
-        unit_test(setLevelsNotInitialized), \
-        unit_test(logNotInitialized),       \
-        unit_test(initializeLogOK),         \
-        unit_test(setBadLogLevel),          \
-        unit_test(testGetCategories),       \
-        unit_test(testGetLoggers),          \
-        unit_test(testLogLevel),            \
-        unit_test(testLocationInfo),        \
-        unit_test(testLogInfo),             \
-        unit_test(testLogLevelNames),       \
+#define LOG_TESTS                                  \
+    unit_test(initializeBadParams),                \
+        unit_test(setLevelsNotInitialized),        \
+        unit_test(logNotInitialized),              \
+        unit_test(initializeLogOK),                \
+        unit_test(setBadLogLevel),                 \
+        unit_test(testGetCategories),              \
+        unit_test(testGetLoggers),                 \
+        unit_test(testLogLevel),                   \
+        unit_test(testLocationInfo),               \
+        unit_test(testNoLocationInfoWithoutArg),   \
+        unit_test(testNoLocationInfoWithArg),      \
+        unit_test(testLogWithVaArgWithLocInfo),    \
+        unit_test(testLogWithVaArgWithoutLocInfo), \
+        unit_test(testLogInfo),                    \
+        unit_test(testLogLevelNames),              \
         STDOUT_TESTS
 
 void initializeBadParams(void** state);
@@ -61,6 +65,10 @@ void testGetCategories(void** state);
 void testGetLoggers(void** state);
 void testLogLevel(void** state);
 void testLocationInfo(void** state);
+void testNoLocationInfoWithoutArg(void** state);
+void testNoLocationInfoWithArg(void** state);
+void testLogWithVaArgWithLocInfo(void** state);
+void testLogWithVaArgWithoutLocInfo(void** state);
 void testLogInfo(void** state);
 void testLogLevelNames(void** state);
 

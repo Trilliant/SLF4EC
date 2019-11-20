@@ -42,6 +42,7 @@ static uint64_t getTimestamp(void)
 }
 const GetLogTimestamp logTimeApi = &getTimestamp;
 
+static const va_list dummyVaList;
 static const uint8_t expectedArg = 33;
 static uint8_t arg = 0;
 
@@ -49,10 +50,16 @@ static LogCategory* curCategory;
 static LogFormat curFormat;
 static char* curFile;
 static int curLine;
+static int* curLinePtr;
 static char* curFct;
 static uint8_t curLevel;
 static char* curFormatStr;
 static bool publishCalled = false;
+
+/* Make accessible functions that are hidden when USE_LOCATION_INFO is enabled */
+extern LogResult nfLog0(const LogCategory* const category, const uint8_t level, const char* const msg);
+extern LogResult nfLog1(const LogCategory* const category, const uint8_t level, const char* const formatStr, ...);
+extern LogResult nfLogv(const LogCategory* category, const uint8_t level, const char* formatStr, va_list vaList);
 
 void dummyInit(const void* const config)
 {
@@ -66,7 +73,11 @@ void dummyPublisher(const LogRecord* const logRecord, const LogFormat format)
     curCategory = (LogCategory*) logRecord->category;
     curFormat = format;
     curFile = (char*) logRecord->file;
-    curLine = *logRecord->line;
+    curLinePtr = (int*) logRecord->line;
+    if (curLinePtr)
+    {
+        curLine = *curLinePtr;
+    }
     curFct = (char*) logRecord->function;
     curLevel = *logRecord->level;
     curFormatStr = (char*) logRecord->formatStr;
@@ -230,6 +241,54 @@ void testLocationInfo(void** state)
     assert_int_equal(__LINE__ - 2, curLine);
     assert_string_equal(__FUNCTION__, curFct);
     assert_string_equal(__FILE__, curFile);
+}
+
+void testNoLocationInfoWithoutArg(void** state)
+{
+    (void) state;
+
+    publishCalled = false;
+    nfLog0(&dummyCategory, LEVEL_INFO, "Some message");
+    assert_true(publishCalled);
+    assert_ptr_equal(NULL, curLinePtr);
+    assert_ptr_equal(NULL, curFct);
+    assert_ptr_equal(NULL, curFile);
+}
+
+void testNoLocationInfoWithArg(void** state)
+{
+    (void) state;
+
+    publishCalled = false;
+    nfLog1(&dummyCategory, LEVEL_INFO, "Some message: %d", 23);
+    assert_true(publishCalled);
+    assert_ptr_equal(NULL, curLinePtr);
+    assert_ptr_equal(NULL, curFct);
+    assert_ptr_equal(NULL, curFile);
+}
+
+void testLogWithVaArgWithLocInfo(void** state)
+{
+    (void) state;
+
+    publishCalled = false;
+    vlogInfo(dummyCategory, "Some format string", dummyVaList);
+    assert_true(publishCalled);
+    assert_int_equal(__LINE__ - 2, curLine);
+    assert_string_equal(__FUNCTION__, curFct);
+    assert_string_equal(__FILE__, curFile);
+}
+
+void testLogWithVaArgWithoutLocInfo(void** state)
+{
+    (void) state;
+
+    publishCalled = false;
+    nfLogv(&dummyCategory, LEVEL_INFO, "Some format string", dummyVaList);
+    assert_true(publishCalled);
+    assert_ptr_equal(NULL, curLinePtr);
+    assert_ptr_equal(NULL, curFct);
+    assert_ptr_equal(NULL, curFile);
 }
 
 void testLogInfo(void** state)

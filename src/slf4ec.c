@@ -45,15 +45,16 @@ static uint8_t nbLoggers;
 static LogCategory* const* categories;
 static Logger* const* loggers;
 static bool isInitialized = false;
+static const va_list emptyVaList;  // Cannot be a variable on the stack as we rely on default compiler initialization.
 
 static bool isCategoryActive(const LogCategory* const category, const uint8_t* const level);
 static LogResult _privateLog(const char* const file,
-                        const uint32_t* const line,
-                        const char* const function,
-                        const LogCategory* const category,
-                        const uint8_t* const level,
-                        const char* const formatStr,
-                        va_list vaList);
+                             const uint32_t* const line,
+                             const char* const function,
+                             const LogCategory* const category,
+                             const uint8_t* const level,
+                             const char* const formatStr,
+                             va_list vaList);
 
 uint8_t getCategories(LogCategory* const** _categories)
 {
@@ -130,9 +131,7 @@ LogResult setLevels(const uint8_t level)
             uint_fast8_t i;
             for (i = 0; i < nbCategories; i++)
             {
-                if (categories[i]) {
-                    categories[i]->currentLogLevel = level;
-                }
+                categories[i]->currentLogLevel = level;
             }
         }
         else
@@ -171,8 +170,7 @@ LogResult noLog()
 #ifndef USE_LOCATION_INFO
 LogResult nfLog0(const LogCategory* const category, const uint8_t level, const char* const msg)
 {
-    va_list vaList;
-    return _privateLog(NULL, NULL, NULL, category, &level, msg, vaList);
+    return _privateLog(NULL, NULL, NULL, category, &level, msg, emptyVaList);
 }
 
 LogResult nfLog1(const LogCategory* const category, const uint8_t level, const char* const formatStr, ...)
@@ -187,7 +185,11 @@ LogResult nfLog1(const LogCategory* const category, const uint8_t level, const c
 
 LogResult nfLogv(const LogCategory* category, const uint8_t level, const char* formatStr, va_list vaList)
 {
-    return _privateLog(NULL, NULL, NULL, category, &level, formatStr, vaList);
+    va_list va;
+    va_copy(va, vaList);
+    LogResult res = _privateLog(NULL, NULL, NULL, category, &level, formatStr, va);
+    va_end(va);
+    return res;
 }
 #else
 LogResult yfLog0(const char* const file,
@@ -197,8 +199,7 @@ LogResult yfLog0(const char* const file,
                  const uint8_t level,
                  const char* const msg)
 {
-    va_list vaList;
-    return _privateLog(file, &line, function, category, &level, msg, vaList);
+    return _privateLog(file, &line, function, category, &level, msg, emptyVaList);
 }
 
 LogResult yfLog1(const char* const file,
@@ -211,7 +212,7 @@ LogResult yfLog1(const char* const file,
     LogResult returnCode;
     va_list vaList;
     va_start(vaList, formatStr);
-    returnCode = _privateLog(file, &Line, function, category, &level, formatStr, vaList);
+    returnCode = _privateLog(file, &line, function, category, &level, formatStr, vaList);
     va_end(vaList);
     return returnCode;
 }
@@ -224,17 +225,21 @@ LogResult yfLogv(const char* const file,
                  const char* const formatStr,
                  va_list vaList)
 {
-    return _privateLog(file, &Line, function, category, &level, formatStr, vaList);
+    va_list va;
+    va_copy(va, vaList);
+    LogResult res = _privateLog(file, &line, function, category, &level, formatStr, va);
+    va_end(va);
+    return res;
 }
 #endif
 
 static LogResult _privateLog(const char* const file,
-                        const uint32_t* const line,
-                        const char* const function,
-                        const LogCategory* const category,
-                        const uint8_t* const level,
-                        const char* const formatStr,
-                        va_list vaList)
+                             const uint32_t* const line,
+                             const char* const function,
+                             const LogCategory* const category,
+                             const uint8_t* const level,
+                             const char* const formatStr,
+                             va_list vaList)
 {
     va_list ap;
     va_copy(ap, vaList);
@@ -249,19 +254,19 @@ static LogResult _privateLog(const char* const file,
         const uint64_t timestamp = logTimeApi();
 
         LogRecord curRecord =
-        {
-            .file = file,
-            .line = line,
-            .function = function,
-            .timestamp = &timestamp,
-            .category = category,
-            .level = level,
-            .formatStr = formatStr,
-            .vaList = &ap
-        };
+            {
+             .file = file,
+             .line = line,
+             .function = function,
+             .timestamp = &timestamp,
+             .category = category,
+             .level = level,
+             .formatStr = formatStr,
+             .vaList = &ap};
 
         publishToLoggers(&curRecord);
     }
+    va_end(ap);
 
     return LOG_OK;
 }
