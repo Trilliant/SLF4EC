@@ -47,13 +47,13 @@ static Logger* const* loggers;
 static bool isInitialized = false;
 
 static bool isCategoryActive(const LogCategory* const category, const uint8_t* const level);
-static void _privateLog(const char* const file,
+static LogResult _privateLog(const char* const file,
                         const uint32_t* const line,
                         const char* const function,
                         const LogCategory* const category,
                         const uint8_t* const level,
                         const char* const formatStr,
-                        va_list* const vaList);
+                        va_list vaList);
 
 uint8_t getCategories(LogCategory* const** _categories)
 {
@@ -130,7 +130,9 @@ LogResult setLevels(const uint8_t level)
             uint_fast8_t i;
             for (i = 0; i < nbCategories; i++)
             {
-                categories[i]->currentLogLevel = level;
+                if (categories[i]) {
+                    categories[i]->currentLogLevel = level;
+                }
             }
         }
         else
@@ -166,68 +168,26 @@ LogResult noLog()
     return returnCode;
 }
 
-/**
- * Macro function to avoid duplicate code inside nfLog1() and yfLog1().
- */
-#define HANDLE_LOG1(mFile, mLine, mFunction)                                            \
-    LogResult returnCode = LOG_OK;                                                      \
-    if (isInitialized)                                                                  \
-    {                                                                                   \
-        if (isCategoryActive(category, &level))                                         \
-        {                                                                               \
-            va_list vaList;                                                             \
-            va_start(vaList, formatStr);                                                \
-                                                                                        \
-            _privateLog(mFile, mLine, mFunction, category, &level, formatStr, &vaList); \
-                                                                                        \
-            va_end(vaList);                                                             \
-        }                                                                               \
-    }                                                                                   \
-    else                                                                                \
-    {                                                                                   \
-        returnCode = LOG_NOT_INITIALIZED;                                               \
-    }                                                                                   \
-                                                                                        \
-    return returnCode
-
-/**
- * Function to avoid duplicate code inside nfLog1() and yfLog1().
- */
-inline static LogResult handleLog0(const char* const file,
-                                   const uint32_t* const line,
-                                   const char* const function,
-                                   const LogCategory* const category,
-                                   const uint8_t* const level,
-                                   const char* const formatStr,
-                                   va_list* const vaList)
-{
-    LogResult returnCode = LOG_OK;
-    if (isInitialized)
-    {
-        if (isCategoryActive(category, level))
-        {
-            _privateLog(file, line, function, category, level, formatStr, vaList);
-        }
-    }
-    else
-    {
-        returnCode = LOG_NOT_INITIALIZED;
-    }
-
-    return returnCode;
-}
-
 #ifndef USE_LOCATION_INFO
 LogResult nfLog0(const LogCategory* const category, const uint8_t level, const char* const msg)
 {
     va_list vaList;
-    return handleLog0(NULL, NULL, NULL, category, &level, msg, &vaList);
+    return _privateLog(NULL, NULL, NULL, category, &level, msg, vaList);
 }
 
 LogResult nfLog1(const LogCategory* const category, const uint8_t level, const char* const formatStr, ...)
 {
-    // SONAR has some weird troubles handling the HANDLE_LOG macro.
-    HANDLE_LOG1(NULL, NULL, NULL);
+    LogResult returnCode;
+    va_list vaList;
+    va_start(vaList, formatStr);
+    returnCode = _privateLog(NULL, NULL, NULL, category, &level, formatStr, vaList);
+    va_end(vaList);
+    return returnCode;
+}
+
+LogResult nfLogv(const LogCategory* category, const uint8_t level, const char* formatStr, va_list vaList)
+{
+    return _privateLog(NULL, NULL, NULL, category, &level, formatStr, vaList);
 }
 #else
 LogResult yfLog0(const char* const file,
@@ -238,7 +198,7 @@ LogResult yfLog0(const char* const file,
                  const char* const msg)
 {
     va_list vaList;
-    return handleLog0(file, &line, function, category, &level, msg, &vaList);
+    return _privateLog(file, &line, function, category, &level, msg, vaList);
 }
 
 LogResult yfLog1(const char* const file,
@@ -248,32 +208,62 @@ LogResult yfLog1(const char* const file,
                  const uint8_t level,
                  const char* const formatStr, ...)
 {
-    HANDLE_LOG1(file, &line, function);
+    LogResult returnCode;
+    va_list vaList;
+    va_start(vaList, formatStr);
+    returnCode = _privateLog(file, &Line, function, category, &level, formatStr, vaList);
+    va_end(vaList);
+    return returnCode;
+}
+
+LogResult yfLogv(const char* const file,
+                 const uint32_t line,
+                 const char* const function,
+                 const LogCategory* const category,
+                 const uint8_t level,
+                 const char* const formatStr,
+                 va_list vaList)
+{
+    return _privateLog(file, &Line, function, category, &level, formatStr, vaList);
 }
 #endif
 
-static void _privateLog(const char* const file,
+static LogResult _privateLog(const char* const file,
                         const uint32_t* const line,
                         const char* const function,
                         const LogCategory* const category,
                         const uint8_t* const level,
                         const char* const formatStr,
-                        va_list* const vaList)
+                        va_list vaList)
 {
-    const uint64_t timestamp = logTimeApi();
+    va_list ap;
+    va_copy(ap, vaList);
 
-    LogRecord curRecord =
+    if (!isInitialized)
+    {
+        return LOG_NOT_INITIALIZED;
+    }
+
+    if (isCategoryActive(category, level))
+    {
+        const uint64_t timestamp = logTimeApi();
+
+        LogRecord curRecord =
         {
-         .file = file,
-         .line = line,
-         .function = function,
-         .timestamp = &timestamp,
-         .category = category,
-         .level = level,
-         .formatStr = formatStr,
-         .vaList = vaList};
+            .file = file,
+            .line = line,
+            .function = function,
+            .timestamp = &timestamp,
+            .category = category,
+            .level = level,
+            .formatStr = formatStr,
+            .vaList = &ap
+        };
 
-    publishToLoggers(&curRecord);
+        publishToLoggers(&curRecord);
+    }
+
+    return LOG_OK;
 }
 
 static inline bool isCategoryActive(const LogCategory* const category, const uint8_t* const level)

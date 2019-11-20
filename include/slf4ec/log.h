@@ -4,7 +4,7 @@
  * Simplified logging API
  *
  * @author Jérémie Faucher-Goulet
- * 
+ *
  * @copyright Trilliant Inc. © 2015 - http://www.trilliantinc.com
  *
  * @License
@@ -71,6 +71,18 @@ extern "C" {
     TOKEN_PASTE(_logOff, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
+ * A version of logOff() that is passed a set of arguments as a va_list.
+ *
+ * @param [in] logCategory ::LogCategory to log against
+ * @param [in] fmt  The message string, including any format specifiers which will be replaced by the values specified in the argument list that follows.
+ * @param [in] valist  The argument list
+ * @retval ::LOG_OK Logged successfully.
+ * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
+ */
+#define vlogOff(logCategory, fmt, valist) \
+    _vlogOff(logCategory, fmt, valist)
+
+/**
  * Logs fatal information. See ::LEVEL_FATAL
  *
  * @param [in] logCategory ::LogCategory to log against
@@ -83,6 +95,18 @@ extern "C" {
  */
 #define logFatal(logCategory, ...) \
     TOKEN_PASTE(_logFatal, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
+
+/**
+ * A version of logFatal() that is passed a set of arguments as a va_list.
+ *
+ * @param [in] logCategory ::LogCategory to log against
+ * @param [in] fmt  The message string, including any format specifiers which will be replaced by the values specified in the argument list that follows.
+ * @param [in] valist  The argument list
+ * @retval ::LOG_OK Logged successfully.
+ * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
+ */
+#define vlogFatal(logCategory, fmt, valist) \
+    _vlogFatal(logCategory, fmt, valist)
 
 /**
  * Logs error information. See ::LEVEL_ERROR
@@ -99,6 +123,18 @@ extern "C" {
     TOKEN_PASTE(_logError, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
+ * A version of logError() that is passed a set of arguments as a va_list.
+ *
+ * @param [in] logCategory ::LogCategory to log against
+ * @param [in] fmt  The message string, including any format specifiers which will be replaced by the values specified in the argument list that follows.
+ * @param [in] valist  The argument list
+ * @retval ::LOG_OK Logged successfully.
+ * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
+ */
+#define vlogError(logCategory, fmt, valist) \
+    _vlogError(logCategory, fmt, valist)
+
+/**
  * Logs warning information. See ::LEVEL_WARN
  *
  * @param [in] logCategory ::LogCategory to log against
@@ -111,6 +147,18 @@ extern "C" {
  */
 #define logWarn(logCategory, ...) \
     TOKEN_PASTE(_logWarn, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
+
+/**
+ * A version of logWarn() that is passed a set of arguments as a va_list.
+ *
+ * @param [in] logCategory ::LogCategory to log against
+ * @param [in] fmt  The message string, including any format specifiers which will be replaced by the values specified in the argument list that follows.
+ * @param [in] valist  The argument list
+ * @retval ::LOG_OK Logged successfully.
+ * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
+ */
+#define vlogWarn(logCategory, fmt, valist) \
+    _vlogWarn(logCategory, fmt, valist)
 
 /**
  * Logs information. See ::LEVEL_INFO
@@ -127,6 +175,18 @@ extern "C" {
     TOKEN_PASTE(_logInfo, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
+ * A version of logInfo() that is passed a set of arguments as a va_list.
+ *
+ * @param [in] logCategory ::LogCategory to log against
+ * @param [in] fmt  The message string, including any format specifiers which will be replaced by the values specified in the argument list that follows.
+ * @param [in] valist  The argument list
+ * @retval ::LOG_OK Logged successfully.
+ * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
+ */
+#define vlogInfo(logCategory, fmt, valist) \
+    _vlogInfo(logCategory, fmt, valist)
+
+/**
  * Logs debug information. See ::LEVEL_DEBUG
  *
  * @param [in] logCategory ::LogCategory to log against
@@ -139,6 +199,18 @@ extern "C" {
  */
 #define logDebug(logCategory, ...) \
     TOKEN_PASTE(_logDebug, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
+
+/**
+ * A version of logDebug() that is passed a set of arguments as a va_list.
+ *
+ * @param [in] logCategory ::LogCategory to log against
+ * @param [in] fmt  The message string, including any format specifiers which will be replaced by the values specified in the argument list that follows.
+ * @param [in] valist  The argument list
+ * @retval ::LOG_OK Logged successfully.
+ * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
+ */
+#define vlogDebug(logCategory, fmt, valist) \
+    _vlogDebug(logCategory, fmt, valist)
 
 /**
  * Logs trace information. See ::LEVEL_TRACE
@@ -155,6 +227,18 @@ extern "C" {
     TOKEN_PASTE(_logTrace, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
 
 /**
+ * A version of logTrace() that is passed a set of arguments as a va_list.
+ *
+ * @param [in] logCategory ::LogCategory to log against
+ * @param [in] fmt  The message string, including any format specifiers which will be replaced by the values specified in the argument list that follows.
+ * @param [in] valist  The argument list
+ * @retval ::LOG_OK Logged successfully.
+ * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
+ */
+#define vlogTrace(logCategory, fmt, valist) \
+    _vlogTrace(logCategory, fmt, valist)
+
+/**
  * Logging to be used temporarily during development. See ::LEVEL_TEST
  *
  * @param [in] logCategory ::LogCategory to log against
@@ -167,6 +251,18 @@ extern "C" {
  */
 #define logTest(logCategory, ...) \
     TOKEN_PASTE(_logTest, IS_EXTRA(__VA_ARGS__)(logCategory, __VA_ARGS__))
+
+/**
+ * A version of logTest() that is passed a set of arguments as a va_list.
+ *
+ * @param [in] logCategory ::LogCategory to log against
+ * @param [in] fmt  The message string, including any format specifiers which will be replaced by the values specified in the argument list that follows.
+ * @param [in] valist  The argument list
+ * @retval ::LOG_OK Logged successfully.
+ * @retval ::LOG_NOT_INITIALIZED ::initLogger must be called prior to logging.
+ */
+#define vlogTest(logCategory, fmt, valist) \
+    _vlogTest(logCategory, fmt, valist)
 
 /**
  * Checks if logging is active for the specified @p logCategory and @p logLevel.
